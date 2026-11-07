@@ -311,11 +311,12 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
 
 
 @app.get("/reports", response_class=HTMLResponse)
-async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, drh_session: str = Cookie(None)):
+async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
     reports = []
+    devices = []
     today_str = date.today().isoformat()
     
     if not start_date:
@@ -326,7 +327,11 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            query = """
+            # Récupérer la liste des terminaux uniques pour le filtre
+            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL ORDER BY device_id")
+            devices = [row['device_id'] for row in cursor.fetchall()]
+
+            base_query = """
                 SELECT 
                     l.badge_or_card_id,
                     COALESCE(e.first_name, 'Inconnu') as first_name,
@@ -334,14 +339,25 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                     COALESCE(e.department, '-') as department,
                     DATE(l.punch_timestamp) as punch_date,
                     MIN(l.punch_timestamp) as check_in,
-                    MAX(l.punch_timestamp) as check_out
+                    MAX(l.punch_timestamp) as check_out,
+                    l.device_id
                 FROM attendance_raw_logs l
                 LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
                 WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
-                GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name, e.department
+            """
+            
+            params = [start_date, end_date]
+            
+            if device_id and device_id != "ALL":
+                base_query += " AND l.device_id = %s"
+                params.append(device_id)
+
+            base_query += """
+                GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name, e.department, l.device_id
                 ORDER BY punch_date DESC, check_in ASC
             """
-            cursor.execute(query, (start_date, end_date))
+            
+            cursor.execute(base_query, tuple(params))
             reports = cursor.fetchall()
         conn.close()
     except Exception as e:
@@ -353,6 +369,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             emp_name = f"{row['first_name']} {row['last_name']}".strip()
             check_in = row['check_in']
             check_out = row['check_out']
+            dev = row.get('device_id', '-')
             
             check_in_str = str(check_in).split(' ')[1] if check_in else '-'
             check_out_str = str(check_out).split(' ')[1] if check_out else '-'
@@ -366,6 +383,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td><span class="badge bg-danger text-white">En retard ({check_in_str})</span></td>
                                 <td><span class="text-muted fst-italic">Manquant</span></td>
                                 <td>-</td>
+                                <td><span class="badge bg-secondary">{dev}</span></td>
                                 <td><span class="badge bg-danger text-white">Absent (Hors plage)</span></td>
                             </tr>
                 """
@@ -406,15 +424,21 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td>{arr_badge}</td>
                                 <td>{dep_badge}</td>
                                 <td><strong>{work_duration}</strong></td>
+                                <td><span class="badge bg-light text-dark border">{dev}</span></td>
                                 <td>{global_status}</td>
                             </tr>
             """
     else:
         report_rows_html = """
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">Aucun pointage trouvé pour cette période.</td>
+                                <td colspan="8" class="text-center py-4 text-muted">Aucun pointage trouvé pour cette période.</td>
                             </tr>
         """
+
+    device_options = '<option value="ALL">Tous les terminaux</option>'
+    for d in devices:
+        selected = 'selected' if device_id == d else ''
+        device_options += f'<option value="{d}" {selected}>{d}</option>'
 
     html_content = f"""
     <!DOCTYPE html>
@@ -509,13 +533,19 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                 </div>
                 <div class="card-body p-4">
                     <form method="GET" action="/reports" class="row g-3">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <label class="form-label text-secondary small fw-bold">Date de début</label>
                             <input type="date" class="form-control" name="start_date" value="{start_date}" required>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <label class="form-label text-secondary small fw-bold">Date de fin</label>
                             <input type="date" class="form-control" name="end_date" value="{end_date}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-secondary small fw-bold">Terminal</label>
+                            <select class="form-select" name="device_id">
+                                {device_options}
+                            </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-success w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-magnifying-glass me-1"></i> Filtrer</button>
@@ -540,6 +570,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                     <th>Arrivée (8h00 - 8h30)</th>
                                     <th>Départ (16h30 - 17h00)</th>
                                     <th>Heures</th>
+                                    <th>Terminal</th>
                                     <th>Statut de Conformité</th>
                                 </tr>
                             </thead>
