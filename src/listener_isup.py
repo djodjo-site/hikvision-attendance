@@ -26,6 +26,26 @@ async def get_logo():
 DRH_USERNAME = "drh"
 DRH_PASSWORD = "password123"
 
+# Fonction utilitaire pour initialiser la table de renommage des appareils
+def init_devices_table():
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS devices_mapping (
+                    device_key VARCHAR(100) PRIMARY KEY,
+                    friendly_name VARCHAR(100) NOT NULL
+                )
+            """)
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur initialisation table devices : {e}")
+
+@app.on_event("startup")
+async def startup_event():
+    init_devices_table()
+
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(error: str = None):
     error_html = f'<div class="alert alert-danger py-2 mb-3 text-center small">{error}</div>' if error else ''
@@ -114,6 +134,7 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
         return RedirectResponse(url="/login", status_code=303)
 
     employees = []
+    devices = []
     
     try:
         conn = get_db_connection()
@@ -123,6 +144,20 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                 employees = cursor.fetchall()
             except Exception:
                 employees = []
+                
+            # Récupérer les terminaux uniques dans les logs
+            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL")
+            raw_devs = [row['device_id'] for row in cursor.fetchall()]
+            
+            # Récupérer les noms personnalisés
+            cursor.execute("SELECT * FROM devices_mapping")
+            mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
+            
+            for dev in raw_devs:
+                devices.append({
+                    "key": dev,
+                    "name": mappings.get(dev, dev)
+                })
                 
         conn.close()
     except Exception as e:
@@ -152,6 +187,24 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                     <td colspan="6" class="text-center py-4 text-muted">Aucun employé trouvé.</td>
                 </tr>
         """
+
+    dev_rows_html = ""
+    if devices:
+        for d in devices:
+            dev_rows_html += f"""
+                <tr>
+                    <td class="ps-3"><code>{d['key']}</code></td>
+                    <td>
+                        <form action="/devices/rename" method="POST" class="d-flex gap-2">
+                            <input type="hidden" name="device_key" value="{d['key']}">
+                            <input type="text" class="form-control form-control-sm" name="friendly_name" value="{d['name']}" required>
+                            <button type="submit" class="btn btn-sm btn-success text-nowrap"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
+                        </form>
+                    </td>
+                </tr>
+            """
+    else:
+        dev_rows_html = '<tr><td colspan="2" class="text-center py-3 text-muted">Aucun terminal détecté pour l\'instant. Effectuez un pointage.</td></tr>'
 
     html_content = f"""
     <!DOCTYPE html>
@@ -238,9 +291,31 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                 <div class="col-md-4">
                     <div class="card border-start border-info border-4">
                         <div class="card-body">
-                            <h6 class="text-muted fw-semibold mb-1">Règles Strictes d'Horaires</h6>
-                            <p class="text-dark mb-0 small fw-medium"><i class="fa-solid fa-business-time me-1 text-info"></i> Arrivée: 08h00 - 08h30 | Sortie: 16h30 - 17h00</p>
+                            <h6 class="text-muted fw-semibold mb-1">Terminaux Connectés</h6>
+                            <h3 class="fw-bold text-info mb-0">{len(devices)} détecté(s)</h3>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GESTION & RENOMMAGE DES TERMINAUX -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-network-wired me-2"></i> Gestion & Renommage des Terminaux de Pointage</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-3">ID Technique / IP d'origine</th>
+                                    <th>Nom Personnalisé (Ex: Porte Principale, Entrepôt...)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dev_rows_html}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -309,6 +384,24 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
     """
     return HTMLResponse(content=html_content)
 
+@app.post("/devices/rename")
+async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO devices_mapping (device_key, friendly_name)
+                VALUES (%s, %s)
+                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
+            """, (device_key.strip(), friendly_name.strip()))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors du renommage du terminal : {e}")
+    return RedirectResponse(url="/", status_code=303)
+
 
 @app.get("/reports", response_class=HTMLResponse)
 async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
@@ -327,9 +420,13 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Récupérer la liste des terminaux uniques pour le filtre
+            # Récupérer les correspondances de noms
+            cursor.execute("SELECT * FROM devices_mapping")
+            mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
+
+            # Récupérer la liste des terminaux uniques
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL ORDER BY device_id")
-            devices = [row['device_id'] for row in cursor.fetchall()]
+            devices = [{"key": row['device_id'], "name": mappings.get(row['device_id'], row['device_id'])} for row in cursor.fetchall()]
 
             base_query = """
                 SELECT 
@@ -369,7 +466,8 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             emp_name = f"{row['first_name']} {row['last_name']}".strip()
             check_in = row['check_in']
             check_out = row['check_out']
-            dev = row.get('device_id', '-')
+            raw_dev = row.get('device_id', '-')
+            dev_display = mappings.get(raw_dev, raw_dev) if raw_dev in mappings else raw_dev
             
             check_in_str = str(check_in).split(' ')[1] if check_in else '-'
             check_out_str = str(check_out).split(' ')[1] if check_out else '-'
@@ -383,7 +481,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td><span class="badge bg-danger text-white">En retard ({check_in_str})</span></td>
                                 <td><span class="text-muted fst-italic">Manquant</span></td>
                                 <td>-</td>
-                                <td><span class="badge bg-secondary">{dev}</span></td>
+                                <td><span class="badge bg-secondary">{dev_display}</span></td>
                                 <td><span class="badge bg-danger text-white">Absent (Hors plage)</span></td>
                             </tr>
                 """
@@ -424,7 +522,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td>{arr_badge}</td>
                                 <td>{dep_badge}</td>
                                 <td><strong>{work_duration}</strong></td>
-                                <td><span class="badge bg-light text-dark border">{dev}</span></td>
+                                <td><span class="badge bg-light text-dark border">{dev_display}</span></td>
                                 <td>{global_status}</td>
                             </tr>
             """
@@ -437,8 +535,8 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
 
     device_options = '<option value="ALL">Tous les terminaux</option>'
     for d in devices:
-        selected = 'selected' if device_id == d else ''
-        device_options += f'<option value="{d}" {selected}>{d}</option>'
+        selected = 'selected' if device_id == d['key'] else ''
+        device_options += f'<option value="{d["key"]}" {selected}>{d["name"]}</option>'
 
     html_content = f"""
     <!DOCTYPE html>
@@ -1021,6 +1119,26 @@ async def update_employee(
     return RedirectResponse(url="/", status_code=303)
 
 
+# --- ROUTE DE RENOMMAGE DES TERMINAUX ---
+@app.post("/devices/rename")
+async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO devices_mapping (device_key, friendly_name)
+                VALUES (%s, %s)
+                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
+            """, (device_key.strip(), friendly_name.strip()))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors du renommage du terminal : {e}")
+    return RedirectResponse(url="/", status_code=303)
+
+
 @app.post("/api/v1/attendance-webhook")
 async def receive_attendance(request: Request):
     try:
@@ -1058,11 +1176,17 @@ async def receive_attendance(request: Request):
                     employee_no = val
                     break
                     
-            ip_val = find_key(data, "ipAddress") or find_key(data, "deviceIpAddress")
+            ip_val = find_key(data, "ipAddress") or find_key(data, "deviceIpAddress") or find_key(data, "deviceID") or find_key(data, "serialNo")
             if ip_val:
                 device_id = ip_val
+            else:
+                client_host = request.client.host if request.client else None
+                if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
+                    device_id = client_host
         except Exception:
-            pass
+            client_host = request.client.host if request.client else None
+            if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
+                device_id = client_host
 
         if employee_no == "UNKNOWN":
             for pattern in [
