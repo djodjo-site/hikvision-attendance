@@ -130,7 +130,7 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
     emp_rows_html = ""
     if employees:
         for emp in employees:
-            is_act = emp.get('is_active', 1)
+            is_act = emp.get('is_active', True)
             status_badge = '<span class="badge bg-success bg-opacity-10 text-success">Actif</span>' if is_act else '<span class="badge bg-danger bg-opacity-10 text-danger">Inactif</span>'
             emp_rows_html += f"""
                 <tr>
@@ -817,23 +817,23 @@ async def add_employee(
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
-   try:
-    conn = get_db_connection()
-    with conn.cursor() as cursor:
-        cursor.execute(
-            """
-            INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (
-                badge_or_card_id.strip(), 
-                first_name.strip(), 
-                last_name.strip(), 
-                department.strip() if department else None,
-                True  # Valeur booléenne acceptée par PostgreSQL
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (
+                    badge_or_card_id.strip(), 
+                    first_name.strip(), 
+                    last_name.strip(), 
+                    department.strip() if department else None,
+                    True  # Valeur booléenne acceptée par PostgreSQL
+                )
             )
-        )
-        conn.commit()
+            conn.commit()
         conn.close()
     except Exception as e:
         print(f"Erreur lors de l'ajout de l'employé : {e}")
@@ -847,7 +847,6 @@ async def receive_attendance(request: Request):
         body = await request.body()
         raw_text = body.decode("utf-8", errors="ignore")
         
-        # Affiche la requête brute dans la console WAMP pour diagnostic
         print("=== REQUÊTE HIKVISION REÇUE ===")
         print(raw_text)
         print("================================")
