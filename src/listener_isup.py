@@ -817,17 +817,23 @@ async def add_employee(
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
-                VALUES (%s, %s, %s, %s, 1)
-                """,
-                (badge_or_card_id.strip(), first_name.strip(), last_name.strip(), department.strip() if department else None)
+   try:
+    conn = get_db_connection()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """
+            INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (
+                badge_or_card_id.strip(), 
+                first_name.strip(), 
+                last_name.strip(), 
+                department.strip() if department else None,
+                True  # Valeur booléenne acceptée par PostgreSQL
             )
-            conn.commit()
+        )
+        conn.commit()
         conn.close()
     except Exception as e:
         print(f"Erreur lors de l'ajout de l'employé : {e}")
