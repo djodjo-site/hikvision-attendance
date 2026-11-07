@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import re
+from zoneinfo import ZoneInfo
 
 # Ajout dynamique du dossier parent dans le chemin Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -898,6 +899,9 @@ async def receive_attendance(request: Request):
 
         print(f"-> Pointage validé | Matricule extrait : {employee_no} | Appareil : {device_id}")
 
+        # Heure locale calée précisément sur Kinshasa
+        local_punch_time = datetime.now(ZoneInfo("Africa/Kinshasa")).replace(tzinfo=None)
+
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute(
@@ -905,7 +909,7 @@ async def receive_attendance(request: Request):
                 INSERT INTO attendance_raw_logs (badge_or_card_id, punch_timestamp, device_id, punch_type)
                 VALUES (%s, %s, %s, %s)
                 """,
-                (employee_no, datetime.now(), device_id, punch_type)
+                (employee_no, local_punch_time, device_id, punch_type)
             )
             conn.commit()
         conn.close()
