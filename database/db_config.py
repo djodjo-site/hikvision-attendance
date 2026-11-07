@@ -1,20 +1,21 @@
 import os
-import pymysql
-from pymysql.cursors import DictCursor
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_NAME = os.getenv("DB_NAME", "time_attendance_db")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASS", "")
-DB_PORT = int(os.getenv("DB_PORT", 3306))
+# Récupération de l'URL unique fournie par Render (DATABASE_URL)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_db_connection():
-    connection = pymysql.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASS,
-        database=DB_NAME,
-        port=DB_PORT,
-        cursorclass=DictCursor
+    """
+    Établit une connexion à la base de données PostgreSQL sur Render.
+    """
+    if not DATABASE_URL:
+        raise RuntimeError("La variable d'environnement DATABASE_URL n'est pas définie.")
+    
+    # Connexion à PostgreSQL avec RealDictCursor pour conserver 
+    # le même comportement de dictionnaires qu'avec PyMySQL
+    connection = psycopg2.connect(
+        DATABASE_URL,
+        cursor_factory=RealDictCursor
     )
     return connection
