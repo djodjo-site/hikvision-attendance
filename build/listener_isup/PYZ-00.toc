@@ -1,0 +1,2863 @@
+('C:\\wamp64\\www\\Time '
+ 'attendance\\hikvision_attendance\\build\\listener_isup\\PYZ-00.pyz',
+ [('__future__',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\__future__.py',
+   'PYMODULE'),
+  ('_aix_support',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_aix_support.py',
+   'PYMODULE'),
+  ('_ast_unparse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_ast_unparse.py',
+   'PYMODULE'),
+  ('_colorize',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_colorize.py',
+   'PYMODULE'),
+  ('_compat_pickle',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_compat_pickle.py',
+   'PYMODULE'),
+  ('_distutils_hack',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\_distutils_hack\\__init__.py',
+   'PYMODULE'),
+  ('_distutils_hack.override',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\_distutils_hack\\override.py',
+   'PYMODULE'),
+  ('_opcode_metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_opcode_metadata.py',
+   'PYMODULE'),
+  ('_osx_support',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_osx_support.py',
+   'PYMODULE'),
+  ('_py_abc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_py_abc.py',
+   'PYMODULE'),
+  ('_py_warnings',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_py_warnings.py',
+   'PYMODULE'),
+  ('_pydatetime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pydatetime.py',
+   'PYMODULE'),
+  ('_pydecimal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pydecimal.py',
+   'PYMODULE'),
+  ('_pyrepl',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\__init__.py',
+   'PYMODULE'),
+  ('_pyrepl._module_completer',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\_module_completer.py',
+   'PYMODULE'),
+  ('_pyrepl._threading_handler',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\_threading_handler.py',
+   'PYMODULE'),
+  ('_pyrepl.base_eventqueue',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\base_eventqueue.py',
+   'PYMODULE'),
+  ('_pyrepl.commands',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\commands.py',
+   'PYMODULE'),
+  ('_pyrepl.completing_reader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\completing_reader.py',
+   'PYMODULE'),
+  ('_pyrepl.console',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\console.py',
+   'PYMODULE'),
+  ('_pyrepl.content',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\content.py',
+   'PYMODULE'),
+  ('_pyrepl.fancy_termios',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\fancy_termios.py',
+   'PYMODULE'),
+  ('_pyrepl.fancycompleter',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\fancycompleter.py',
+   'PYMODULE'),
+  ('_pyrepl.historical_reader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\historical_reader.py',
+   'PYMODULE'),
+  ('_pyrepl.input',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\input.py',
+   'PYMODULE'),
+  ('_pyrepl.keymap',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\keymap.py',
+   'PYMODULE'),
+  ('_pyrepl.layout',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\layout.py',
+   'PYMODULE'),
+  ('_pyrepl.main',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\main.py',
+   'PYMODULE'),
+  ('_pyrepl.pager',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\pager.py',
+   'PYMODULE'),
+  ('_pyrepl.reader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\reader.py',
+   'PYMODULE'),
+  ('_pyrepl.readline',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\readline.py',
+   'PYMODULE'),
+  ('_pyrepl.render',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\render.py',
+   'PYMODULE'),
+  ('_pyrepl.simple_interact',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\simple_interact.py',
+   'PYMODULE'),
+  ('_pyrepl.terminfo',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\terminfo.py',
+   'PYMODULE'),
+  ('_pyrepl.trace',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\trace.py',
+   'PYMODULE'),
+  ('_pyrepl.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\types.py',
+   'PYMODULE'),
+  ('_pyrepl.unix_console',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\unix_console.py',
+   'PYMODULE'),
+  ('_pyrepl.unix_eventqueue',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\unix_eventqueue.py',
+   'PYMODULE'),
+  ('_pyrepl.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\utils.py',
+   'PYMODULE'),
+  ('_pyrepl.windows_console',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\windows_console.py',
+   'PYMODULE'),
+  ('_pyrepl.windows_eventqueue',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_pyrepl\\windows_eventqueue.py',
+   'PYMODULE'),
+  ('_sitebuiltins',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_sitebuiltins.py',
+   'PYMODULE'),
+  ('_strptime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_strptime.py',
+   'PYMODULE'),
+  ('_threading_local',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\_threading_local.py',
+   'PYMODULE'),
+  ('annotated_doc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\annotated_doc\\__init__.py',
+   'PYMODULE'),
+  ('annotated_doc.main',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\annotated_doc\\main.py',
+   'PYMODULE'),
+  ('annotated_types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\annotated_types\\__init__.py',
+   'PYMODULE'),
+  ('annotationlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\annotationlib.py',
+   'PYMODULE'),
+  ('anyio',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\__init__.py',
+   'PYMODULE'),
+  ('anyio._backends',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_backends\\__init__.py',
+   'PYMODULE'),
+  ('anyio._backends._asyncio',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_backends\\_asyncio.py',
+   'PYMODULE'),
+  ('anyio._backends._trio',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_backends\\_trio.py',
+   'PYMODULE'),
+  ('anyio._core',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\__init__.py',
+   'PYMODULE'),
+  ('anyio._core._asyncio_selector_thread',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_asyncio_selector_thread.py',
+   'PYMODULE'),
+  ('anyio._core._concurrency_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_concurrency_utils.py',
+   'PYMODULE'),
+  ('anyio._core._contextmanagers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_contextmanagers.py',
+   'PYMODULE'),
+  ('anyio._core._eventloop',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_eventloop.py',
+   'PYMODULE'),
+  ('anyio._core._exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_exceptions.py',
+   'PYMODULE'),
+  ('anyio._core._fileio',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_fileio.py',
+   'PYMODULE'),
+  ('anyio._core._futures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_futures.py',
+   'PYMODULE'),
+  ('anyio._core._resources',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_resources.py',
+   'PYMODULE'),
+  ('anyio._core._signals',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_signals.py',
+   'PYMODULE'),
+  ('anyio._core._sockets',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_sockets.py',
+   'PYMODULE'),
+  ('anyio._core._streams',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_streams.py',
+   'PYMODULE'),
+  ('anyio._core._subprocesses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_subprocesses.py',
+   'PYMODULE'),
+  ('anyio._core._synchronization',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_synchronization.py',
+   'PYMODULE'),
+  ('anyio._core._tasks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_tasks.py',
+   'PYMODULE'),
+  ('anyio._core._tempfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_tempfile.py',
+   'PYMODULE'),
+  ('anyio._core._testing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_testing.py',
+   'PYMODULE'),
+  ('anyio._core._typedattr',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_core\\_typedattr.py',
+   'PYMODULE'),
+  ('anyio._lazyimport',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\_lazyimport.py',
+   'PYMODULE'),
+  ('anyio.abc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\__init__.py',
+   'PYMODULE'),
+  ('anyio.abc._eventloop',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_eventloop.py',
+   'PYMODULE'),
+  ('anyio.abc._resources',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_resources.py',
+   'PYMODULE'),
+  ('anyio.abc._sockets',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_sockets.py',
+   'PYMODULE'),
+  ('anyio.abc._streams',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_streams.py',
+   'PYMODULE'),
+  ('anyio.abc._subprocesses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_subprocesses.py',
+   'PYMODULE'),
+  ('anyio.abc._tasks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_tasks.py',
+   'PYMODULE'),
+  ('anyio.abc._testing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\abc\\_testing.py',
+   'PYMODULE'),
+  ('anyio.from_thread',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\from_thread.py',
+   'PYMODULE'),
+  ('anyio.functools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\functools.py',
+   'PYMODULE'),
+  ('anyio.itertools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\itertools.py',
+   'PYMODULE'),
+  ('anyio.lowlevel',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\lowlevel.py',
+   'PYMODULE'),
+  ('anyio.streams',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\streams\\__init__.py',
+   'PYMODULE'),
+  ('anyio.streams.buffered',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\streams\\buffered.py',
+   'PYMODULE'),
+  ('anyio.streams.memory',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\streams\\memory.py',
+   'PYMODULE'),
+  ('anyio.streams.stapled',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\streams\\stapled.py',
+   'PYMODULE'),
+  ('anyio.streams.tls',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\streams\\tls.py',
+   'PYMODULE'),
+  ('anyio.to_interpreter',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\to_interpreter.py',
+   'PYMODULE'),
+  ('anyio.to_process',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\to_process.py',
+   'PYMODULE'),
+  ('anyio.to_thread',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\anyio\\to_thread.py',
+   'PYMODULE'),
+  ('argparse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\argparse.py',
+   'PYMODULE'),
+  ('ast',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ast.py',
+   'PYMODULE'),
+  ('asyncio',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\__init__.py',
+   'PYMODULE'),
+  ('asyncio.base_events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\base_events.py',
+   'PYMODULE'),
+  ('asyncio.base_futures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\base_futures.py',
+   'PYMODULE'),
+  ('asyncio.base_subprocess',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\base_subprocess.py',
+   'PYMODULE'),
+  ('asyncio.base_tasks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\base_tasks.py',
+   'PYMODULE'),
+  ('asyncio.constants',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\constants.py',
+   'PYMODULE'),
+  ('asyncio.coroutines',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\coroutines.py',
+   'PYMODULE'),
+  ('asyncio.events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\events.py',
+   'PYMODULE'),
+  ('asyncio.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\exceptions.py',
+   'PYMODULE'),
+  ('asyncio.format_helpers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\format_helpers.py',
+   'PYMODULE'),
+  ('asyncio.futures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\futures.py',
+   'PYMODULE'),
+  ('asyncio.graph',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\graph.py',
+   'PYMODULE'),
+  ('asyncio.locks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\locks.py',
+   'PYMODULE'),
+  ('asyncio.log',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\log.py',
+   'PYMODULE'),
+  ('asyncio.mixins',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\mixins.py',
+   'PYMODULE'),
+  ('asyncio.proactor_events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\proactor_events.py',
+   'PYMODULE'),
+  ('asyncio.protocols',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\protocols.py',
+   'PYMODULE'),
+  ('asyncio.queues',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\queues.py',
+   'PYMODULE'),
+  ('asyncio.runners',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\runners.py',
+   'PYMODULE'),
+  ('asyncio.selector_events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\selector_events.py',
+   'PYMODULE'),
+  ('asyncio.sslproto',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\sslproto.py',
+   'PYMODULE'),
+  ('asyncio.staggered',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\staggered.py',
+   'PYMODULE'),
+  ('asyncio.streams',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\streams.py',
+   'PYMODULE'),
+  ('asyncio.subprocess',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\subprocess.py',
+   'PYMODULE'),
+  ('asyncio.taskgroups',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\taskgroups.py',
+   'PYMODULE'),
+  ('asyncio.tasks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\tasks.py',
+   'PYMODULE'),
+  ('asyncio.threads',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\threads.py',
+   'PYMODULE'),
+  ('asyncio.timeouts',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\timeouts.py',
+   'PYMODULE'),
+  ('asyncio.transports',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\transports.py',
+   'PYMODULE'),
+  ('asyncio.trsock',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\trsock.py',
+   'PYMODULE'),
+  ('asyncio.unix_events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\unix_events.py',
+   'PYMODULE'),
+  ('asyncio.windows_events',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\windows_events.py',
+   'PYMODULE'),
+  ('asyncio.windows_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\asyncio\\windows_utils.py',
+   'PYMODULE'),
+  ('base64',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\base64.py',
+   'PYMODULE'),
+  ('bisect',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\bisect.py',
+   'PYMODULE'),
+  ('bz2',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\bz2.py',
+   'PYMODULE'),
+  ('calendar',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\calendar.py',
+   'PYMODULE'),
+  ('code',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\code.py',
+   'PYMODULE'),
+  ('codeop',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\codeop.py',
+   'PYMODULE'),
+  ('colorsys',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\colorsys.py',
+   'PYMODULE'),
+  ('compression',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\compression\\__init__.py',
+   'PYMODULE'),
+  ('compression._common',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\compression\\_common\\__init__.py',
+   'PYMODULE'),
+  ('compression._common._streams',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\compression\\_common\\_streams.py',
+   'PYMODULE'),
+  ('compression.zstd',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\compression\\zstd\\__init__.py',
+   'PYMODULE'),
+  ('compression.zstd._zstdfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\compression\\zstd\\_zstdfile.py',
+   'PYMODULE'),
+  ('concurrent',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\__init__.py',
+   'PYMODULE'),
+  ('concurrent.futures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\futures\\__init__.py',
+   'PYMODULE'),
+  ('concurrent.futures._base',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\futures\\_base.py',
+   'PYMODULE'),
+  ('concurrent.futures.interpreter',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\futures\\interpreter.py',
+   'PYMODULE'),
+  ('concurrent.futures.process',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\futures\\process.py',
+   'PYMODULE'),
+  ('concurrent.futures.thread',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\futures\\thread.py',
+   'PYMODULE'),
+  ('concurrent.interpreters',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\interpreters\\__init__.py',
+   'PYMODULE'),
+  ('concurrent.interpreters._crossinterp',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\interpreters\\_crossinterp.py',
+   'PYMODULE'),
+  ('concurrent.interpreters._queues',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\concurrent\\interpreters\\_queues.py',
+   'PYMODULE'),
+  ('configparser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\configparser.py',
+   'PYMODULE'),
+  ('contextlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\contextlib.py',
+   'PYMODULE'),
+  ('contextvars',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\contextvars.py',
+   'PYMODULE'),
+  ('copy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\copy.py',
+   'PYMODULE'),
+  ('csv',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\csv.py',
+   'PYMODULE'),
+  ('ctypes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ctypes\\__init__.py',
+   'PYMODULE'),
+  ('ctypes._endian',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ctypes\\_endian.py',
+   'PYMODULE'),
+  ('ctypes._layout',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ctypes\\_layout.py',
+   'PYMODULE'),
+  ('ctypes.wintypes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ctypes\\wintypes.py',
+   'PYMODULE'),
+  ('database', '-', 'PYMODULE'),
+  ('database.db_config',
+   'C:\\wamp64\\www\\Time '
+   'attendance\\hikvision_attendance\\database\\db_config.py',
+   'PYMODULE'),
+  ('dataclasses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\dataclasses.py',
+   'PYMODULE'),
+  ('datetime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\datetime.py',
+   'PYMODULE'),
+  ('decimal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\decimal.py',
+   'PYMODULE'),
+  ('difflib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\difflib.py',
+   'PYMODULE'),
+  ('dis',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\dis.py',
+   'PYMODULE'),
+  ('dotenv',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\dotenv\\__init__.py',
+   'PYMODULE'),
+  ('dotenv.ipython',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\dotenv\\ipython.py',
+   'PYMODULE'),
+  ('dotenv.main',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\dotenv\\main.py',
+   'PYMODULE'),
+  ('dotenv.parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\dotenv\\parser.py',
+   'PYMODULE'),
+  ('dotenv.variables',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\dotenv\\variables.py',
+   'PYMODULE'),
+  ('email',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\__init__.py',
+   'PYMODULE'),
+  ('email._encoded_words',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\_encoded_words.py',
+   'PYMODULE'),
+  ('email._header_value_parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\_header_value_parser.py',
+   'PYMODULE'),
+  ('email._parseaddr',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\_parseaddr.py',
+   'PYMODULE'),
+  ('email._policybase',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\_policybase.py',
+   'PYMODULE'),
+  ('email.base64mime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\base64mime.py',
+   'PYMODULE'),
+  ('email.charset',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\charset.py',
+   'PYMODULE'),
+  ('email.contentmanager',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\contentmanager.py',
+   'PYMODULE'),
+  ('email.encoders',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\encoders.py',
+   'PYMODULE'),
+  ('email.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\errors.py',
+   'PYMODULE'),
+  ('email.feedparser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\feedparser.py',
+   'PYMODULE'),
+  ('email.generator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\generator.py',
+   'PYMODULE'),
+  ('email.header',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\header.py',
+   'PYMODULE'),
+  ('email.headerregistry',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\headerregistry.py',
+   'PYMODULE'),
+  ('email.iterators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\iterators.py',
+   'PYMODULE'),
+  ('email.message',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\message.py',
+   'PYMODULE'),
+  ('email.parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\parser.py',
+   'PYMODULE'),
+  ('email.policy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\policy.py',
+   'PYMODULE'),
+  ('email.quoprimime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\quoprimime.py',
+   'PYMODULE'),
+  ('email.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\email\\utils.py',
+   'PYMODULE'),
+  ('fastapi',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\__init__.py',
+   'PYMODULE'),
+  ('fastapi._compat',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\_compat\\__init__.py',
+   'PYMODULE'),
+  ('fastapi._compat.shared',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\_compat\\shared.py',
+   'PYMODULE'),
+  ('fastapi._compat.v2',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\_compat\\v2.py',
+   'PYMODULE'),
+  ('fastapi.applications',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\applications.py',
+   'PYMODULE'),
+  ('fastapi.background',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\background.py',
+   'PYMODULE'),
+  ('fastapi.concurrency',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\concurrency.py',
+   'PYMODULE'),
+  ('fastapi.datastructures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\datastructures.py',
+   'PYMODULE'),
+  ('fastapi.dependencies',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\dependencies\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.dependencies.models',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\dependencies\\models.py',
+   'PYMODULE'),
+  ('fastapi.dependencies.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\dependencies\\utils.py',
+   'PYMODULE'),
+  ('fastapi.encoders',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\encoders.py',
+   'PYMODULE'),
+  ('fastapi.exception_handlers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\exception_handlers.py',
+   'PYMODULE'),
+  ('fastapi.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\exceptions.py',
+   'PYMODULE'),
+  ('fastapi.logger',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\logger.py',
+   'PYMODULE'),
+  ('fastapi.middleware',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\middleware\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.middleware.asyncexitstack',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\middleware\\asyncexitstack.py',
+   'PYMODULE'),
+  ('fastapi.openapi',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\openapi\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.openapi.constants',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\openapi\\constants.py',
+   'PYMODULE'),
+  ('fastapi.openapi.docs',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\openapi\\docs.py',
+   'PYMODULE'),
+  ('fastapi.openapi.models',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\openapi\\models.py',
+   'PYMODULE'),
+  ('fastapi.openapi.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\openapi\\utils.py',
+   'PYMODULE'),
+  ('fastapi.param_functions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\param_functions.py',
+   'PYMODULE'),
+  ('fastapi.params',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\params.py',
+   'PYMODULE'),
+  ('fastapi.requests',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\requests.py',
+   'PYMODULE'),
+  ('fastapi.responses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\responses.py',
+   'PYMODULE'),
+  ('fastapi.routing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\routing.py',
+   'PYMODULE'),
+  ('fastapi.security',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.security.api_key',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\api_key.py',
+   'PYMODULE'),
+  ('fastapi.security.base',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\base.py',
+   'PYMODULE'),
+  ('fastapi.security.http',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\http.py',
+   'PYMODULE'),
+  ('fastapi.security.oauth2',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\oauth2.py',
+   'PYMODULE'),
+  ('fastapi.security.open_id_connect_url',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\open_id_connect_url.py',
+   'PYMODULE'),
+  ('fastapi.security.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\security\\utils.py',
+   'PYMODULE'),
+  ('fastapi.sse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\sse.py',
+   'PYMODULE'),
+  ('fastapi.telemetry',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\telemetry\\__init__.py',
+   'PYMODULE'),
+  ('fastapi.telemetry._api',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\telemetry\\_api.py',
+   'PYMODULE'),
+  ('fastapi.telemetry._asgi',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\telemetry\\_asgi.py',
+   'PYMODULE'),
+  ('fastapi.telemetry._runtime',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\telemetry\\_runtime.py',
+   'PYMODULE'),
+  ('fastapi.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\types.py',
+   'PYMODULE'),
+  ('fastapi.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\utils.py',
+   'PYMODULE'),
+  ('fastapi.websockets',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\fastapi\\websockets.py',
+   'PYMODULE'),
+  ('fnmatch',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\fnmatch.py',
+   'PYMODULE'),
+  ('fractions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\fractions.py',
+   'PYMODULE'),
+  ('ftplib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ftplib.py',
+   'PYMODULE'),
+  ('getopt',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\getopt.py',
+   'PYMODULE'),
+  ('getpass',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\getpass.py',
+   'PYMODULE'),
+  ('gettext',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\gettext.py',
+   'PYMODULE'),
+  ('glob',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\glob.py',
+   'PYMODULE'),
+  ('gzip',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\gzip.py',
+   'PYMODULE'),
+  ('hashlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\hashlib.py',
+   'PYMODULE'),
+  ('hmac',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\hmac.py',
+   'PYMODULE'),
+  ('html',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\html\\__init__.py',
+   'PYMODULE'),
+  ('html.entities',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\html\\entities.py',
+   'PYMODULE'),
+  ('http',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\__init__.py',
+   'PYMODULE'),
+  ('http.client',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\client.py',
+   'PYMODULE'),
+  ('http.cookiejar',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\cookiejar.py',
+   'PYMODULE'),
+  ('http.cookies',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\cookies.py',
+   'PYMODULE'),
+  ('http.server',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\http\\server.py',
+   'PYMODULE'),
+  ('idna',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\__init__.py',
+   'PYMODULE'),
+  ('idna.core',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\core.py',
+   'PYMODULE'),
+  ('idna.idnadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\idnadata.py',
+   'PYMODULE'),
+  ('idna.intranges',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\intranges.py',
+   'PYMODULE'),
+  ('idna.package_data',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\package_data.py',
+   'PYMODULE'),
+  ('idna.uts46data',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\idna\\uts46data.py',
+   'PYMODULE'),
+  ('importlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\__init__.py',
+   'PYMODULE'),
+  ('importlib._abc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\_abc.py',
+   'PYMODULE'),
+  ('importlib._bootstrap',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\_bootstrap.py',
+   'PYMODULE'),
+  ('importlib._bootstrap_external',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\_bootstrap_external.py',
+   'PYMODULE'),
+  ('importlib.abc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\abc.py',
+   'PYMODULE'),
+  ('importlib.machinery',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\machinery.py',
+   'PYMODULE'),
+  ('importlib.metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\__init__.py',
+   'PYMODULE'),
+  ('importlib.metadata._adapters',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_adapters.py',
+   'PYMODULE'),
+  ('importlib.metadata._collections',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_collections.py',
+   'PYMODULE'),
+  ('importlib.metadata._context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_context.py',
+   'PYMODULE'),
+  ('importlib.metadata._functools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_functools.py',
+   'PYMODULE'),
+  ('importlib.metadata._itertools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_itertools.py',
+   'PYMODULE'),
+  ('importlib.metadata._meta',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_meta.py',
+   'PYMODULE'),
+  ('importlib.metadata._text',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_text.py',
+   'PYMODULE'),
+  ('importlib.metadata._typing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\metadata\\_typing.py',
+   'PYMODULE'),
+  ('importlib.readers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\readers.py',
+   'PYMODULE'),
+  ('importlib.resources',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\__init__.py',
+   'PYMODULE'),
+  ('importlib.resources._adapters',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\_adapters.py',
+   'PYMODULE'),
+  ('importlib.resources._common',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\_common.py',
+   'PYMODULE'),
+  ('importlib.resources._functional',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\_functional.py',
+   'PYMODULE'),
+  ('importlib.resources._itertools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\_itertools.py',
+   'PYMODULE'),
+  ('importlib.resources.abc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\abc.py',
+   'PYMODULE'),
+  ('importlib.resources.readers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\resources\\readers.py',
+   'PYMODULE'),
+  ('importlib.util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\importlib\\util.py',
+   'PYMODULE'),
+  ('inspect',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\inspect.py',
+   'PYMODULE'),
+  ('ipaddress',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ipaddress.py',
+   'PYMODULE'),
+  ('json',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\json\\__init__.py',
+   'PYMODULE'),
+  ('json.decoder',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\json\\decoder.py',
+   'PYMODULE'),
+  ('json.encoder',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\json\\encoder.py',
+   'PYMODULE'),
+  ('json.scanner',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\json\\scanner.py',
+   'PYMODULE'),
+  ('logging',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\logging\\__init__.py',
+   'PYMODULE'),
+  ('lzma',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\lzma.py',
+   'PYMODULE'),
+  ('mimetypes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\mimetypes.py',
+   'PYMODULE'),
+  ('multipart',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\multipart\\__init__.py',
+   'PYMODULE'),
+  ('multipart.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\multipart\\exceptions.py',
+   'PYMODULE'),
+  ('multipart.multipart',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\multipart\\multipart.py',
+   'PYMODULE'),
+  ('multiprocessing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\__init__.py',
+   'PYMODULE'),
+  ('multiprocessing.connection',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\connection.py',
+   'PYMODULE'),
+  ('multiprocessing.context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\context.py',
+   'PYMODULE'),
+  ('multiprocessing.dummy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\dummy\\__init__.py',
+   'PYMODULE'),
+  ('multiprocessing.dummy.connection',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\dummy\\connection.py',
+   'PYMODULE'),
+  ('multiprocessing.forkserver',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\forkserver.py',
+   'PYMODULE'),
+  ('multiprocessing.heap',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\heap.py',
+   'PYMODULE'),
+  ('multiprocessing.managers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\managers.py',
+   'PYMODULE'),
+  ('multiprocessing.pool',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\pool.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_fork',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\popen_fork.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_forkserver',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\popen_forkserver.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_spawn_posix',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\popen_spawn_posix.py',
+   'PYMODULE'),
+  ('multiprocessing.popen_spawn_win32',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\popen_spawn_win32.py',
+   'PYMODULE'),
+  ('multiprocessing.process',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\process.py',
+   'PYMODULE'),
+  ('multiprocessing.queues',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\queues.py',
+   'PYMODULE'),
+  ('multiprocessing.reduction',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\reduction.py',
+   'PYMODULE'),
+  ('multiprocessing.resource_sharer',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\resource_sharer.py',
+   'PYMODULE'),
+  ('multiprocessing.resource_tracker',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\resource_tracker.py',
+   'PYMODULE'),
+  ('multiprocessing.shared_memory',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\shared_memory.py',
+   'PYMODULE'),
+  ('multiprocessing.sharedctypes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\sharedctypes.py',
+   'PYMODULE'),
+  ('multiprocessing.spawn',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\spawn.py',
+   'PYMODULE'),
+  ('multiprocessing.synchronize',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\synchronize.py',
+   'PYMODULE'),
+  ('multiprocessing.util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\multiprocessing\\util.py',
+   'PYMODULE'),
+  ('netrc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\netrc.py',
+   'PYMODULE'),
+  ('numbers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\numbers.py',
+   'PYMODULE'),
+  ('opcode',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\opcode.py',
+   'PYMODULE'),
+  ('opentelemetry', '-', 'PYMODULE'),
+  ('opentelemetry._logs',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\_logs\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry._logs._internal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\_logs\\_internal\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry._logs.severity',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\_logs\\severity\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.attributes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\attributes\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.baggage',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\baggage\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.baggage.propagation',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\baggage\\propagation\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\context\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.context.context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\context\\context.py',
+   'PYMODULE'),
+  ('opentelemetry.context.contextvars_context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\context\\contextvars_context.py',
+   'PYMODULE'),
+  ('opentelemetry.environment_variables',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\environment_variables\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.metrics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\metrics\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.metrics._internal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\metrics\\_internal\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.metrics._internal.instrument',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\metrics\\_internal\\instrument.py',
+   'PYMODULE'),
+  ('opentelemetry.metrics._internal.observation',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\metrics\\_internal\\observation.py',
+   'PYMODULE'),
+  ('opentelemetry.propagate',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\propagate\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.propagators', '-', 'PYMODULE'),
+  ('opentelemetry.propagators.composite',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\propagators\\composite.py',
+   'PYMODULE'),
+  ('opentelemetry.propagators.textmap',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\propagators\\textmap.py',
+   'PYMODULE'),
+  ('opentelemetry.trace',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\trace\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.trace.propagation',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\trace\\propagation\\__init__.py',
+   'PYMODULE'),
+  ('opentelemetry.trace.propagation.tracecontext',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\trace\\propagation\\tracecontext.py',
+   'PYMODULE'),
+  ('opentelemetry.trace.span',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\trace\\span.py',
+   'PYMODULE'),
+  ('opentelemetry.trace.status',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\trace\\status.py',
+   'PYMODULE'),
+  ('opentelemetry.util', '-', 'PYMODULE'),
+  ('opentelemetry.util._decorator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\_decorator.py',
+   'PYMODULE'),
+  ('opentelemetry.util._importlib_metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\_importlib_metadata.py',
+   'PYMODULE'),
+  ('opentelemetry.util._once',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\_once.py',
+   'PYMODULE'),
+  ('opentelemetry.util._providers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\_providers.py',
+   'PYMODULE'),
+  ('opentelemetry.util.re',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\re.py',
+   'PYMODULE'),
+  ('opentelemetry.util.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\opentelemetry\\util\\types.py',
+   'PYMODULE'),
+  ('packaging',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('packaging._elffile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('packaging._manylinux',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('packaging._musllinux',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('packaging._parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('packaging._ranges',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_ranges.py',
+   'PYMODULE'),
+  ('packaging._tokenizer',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('packaging.licenses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\licenses\\__init__.py',
+   'PYMODULE'),
+  ('packaging.licenses._spdx',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\licenses\\_spdx.py',
+   'PYMODULE'),
+  ('packaging.markers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\markers.py',
+   'PYMODULE'),
+  ('packaging.ranges',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\ranges.py',
+   'PYMODULE'),
+  ('packaging.requirements',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('packaging.specifiers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('packaging.tags',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\tags.py',
+   'PYMODULE'),
+  ('packaging.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\utils.py',
+   'PYMODULE'),
+  ('packaging.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\packaging\\version.py',
+   'PYMODULE'),
+  ('pathlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pathlib\\__init__.py',
+   'PYMODULE'),
+  ('pathlib._os',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pathlib\\_os.py',
+   'PYMODULE'),
+  ('pathlib.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pathlib\\types.py',
+   'PYMODULE'),
+  ('pickle',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pickle.py',
+   'PYMODULE'),
+  ('pkgutil',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pkgutil.py',
+   'PYMODULE'),
+  ('platform',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\platform.py',
+   'PYMODULE'),
+  ('plistlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\plistlib.py',
+   'PYMODULE'),
+  ('pprint',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pprint.py',
+   'PYMODULE'),
+  ('py_compile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\py_compile.py',
+   'PYMODULE'),
+  ('pydantic',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\__init__.py',
+   'PYMODULE'),
+  ('pydantic._internal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\__init__.py',
+   'PYMODULE'),
+  ('pydantic._internal._config',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_config.py',
+   'PYMODULE'),
+  ('pydantic._internal._contextlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_contextlib.py',
+   'PYMODULE'),
+  ('pydantic._internal._core_metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_core_metadata.py',
+   'PYMODULE'),
+  ('pydantic._internal._core_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_core_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._dataclasses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_dataclasses.py',
+   'PYMODULE'),
+  ('pydantic._internal._decorators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_decorators.py',
+   'PYMODULE'),
+  ('pydantic._internal._decorators_v1',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_decorators_v1.py',
+   'PYMODULE'),
+  ('pydantic._internal._discriminated_union',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_discriminated_union.py',
+   'PYMODULE'),
+  ('pydantic._internal._docs_extraction',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_docs_extraction.py',
+   'PYMODULE'),
+  ('pydantic._internal._fields',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_fields.py',
+   'PYMODULE'),
+  ('pydantic._internal._forward_ref',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_forward_ref.py',
+   'PYMODULE'),
+  ('pydantic._internal._generate_schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_generate_schema.py',
+   'PYMODULE'),
+  ('pydantic._internal._generics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_generics.py',
+   'PYMODULE'),
+  ('pydantic._internal._git',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_git.py',
+   'PYMODULE'),
+  ('pydantic._internal._import_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_import_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._known_annotated_metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_known_annotated_metadata.py',
+   'PYMODULE'),
+  ('pydantic._internal._mock_val_ser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_mock_val_ser.py',
+   'PYMODULE'),
+  ('pydantic._internal._model_construction',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_model_construction.py',
+   'PYMODULE'),
+  ('pydantic._internal._namespace_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_namespace_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._repr',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_repr.py',
+   'PYMODULE'),
+  ('pydantic._internal._schema_gather',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_schema_gather.py',
+   'PYMODULE'),
+  ('pydantic._internal._schema_generation_shared',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_schema_generation_shared.py',
+   'PYMODULE'),
+  ('pydantic._internal._serializers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_serializers.py',
+   'PYMODULE'),
+  ('pydantic._internal._signature',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_signature.py',
+   'PYMODULE'),
+  ('pydantic._internal._type_refs',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_type_refs.py',
+   'PYMODULE'),
+  ('pydantic._internal._typing_extra',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_typing_extra.py',
+   'PYMODULE'),
+  ('pydantic._internal._utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_utils.py',
+   'PYMODULE'),
+  ('pydantic._internal._validate_call',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_validate_call.py',
+   'PYMODULE'),
+  ('pydantic._internal._validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_internal\\_validators.py',
+   'PYMODULE'),
+  ('pydantic._migration',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\_migration.py',
+   'PYMODULE'),
+  ('pydantic.alias_generators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\alias_generators.py',
+   'PYMODULE'),
+  ('pydantic.aliases',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\aliases.py',
+   'PYMODULE'),
+  ('pydantic.annotated_handlers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\annotated_handlers.py',
+   'PYMODULE'),
+  ('pydantic.class_validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.color',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\color.py',
+   'PYMODULE'),
+  ('pydantic.config',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\config.py',
+   'PYMODULE'),
+  ('pydantic.dataclasses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\dataclasses.py',
+   'PYMODULE'),
+  ('pydantic.datetime_parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\datetime_parse.py',
+   'PYMODULE'),
+  ('pydantic.decorator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.deprecated',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.class_validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.config',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\config.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.copy_internals',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\copy_internals.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.decorator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.json',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\json.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\parse.py',
+   'PYMODULE'),
+  ('pydantic.deprecated.tools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\deprecated\\tools.py',
+   'PYMODULE'),
+  ('pydantic.env_settings',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\env_settings.py',
+   'PYMODULE'),
+  ('pydantic.error_wrappers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\error_wrappers.py',
+   'PYMODULE'),
+  ('pydantic.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\errors.py',
+   'PYMODULE'),
+  ('pydantic.experimental',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\experimental\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.experimental.arguments_schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\experimental\\arguments_schema.py',
+   'PYMODULE'),
+  ('pydantic.experimental.missing_sentinel',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\experimental\\missing_sentinel.py',
+   'PYMODULE'),
+  ('pydantic.experimental.pipeline',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\experimental\\pipeline.py',
+   'PYMODULE'),
+  ('pydantic.fields',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\fields.py',
+   'PYMODULE'),
+  ('pydantic.functional_serializers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\functional_serializers.py',
+   'PYMODULE'),
+  ('pydantic.functional_validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\functional_validators.py',
+   'PYMODULE'),
+  ('pydantic.generics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\generics.py',
+   'PYMODULE'),
+  ('pydantic.json',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\json.py',
+   'PYMODULE'),
+  ('pydantic.json_schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\json_schema.py',
+   'PYMODULE'),
+  ('pydantic.main',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\main.py',
+   'PYMODULE'),
+  ('pydantic.mypy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\mypy.py',
+   'PYMODULE'),
+  ('pydantic.networks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\networks.py',
+   'PYMODULE'),
+  ('pydantic.parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\parse.py',
+   'PYMODULE'),
+  ('pydantic.plugin',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\plugin\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.plugin._loader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\plugin\\_loader.py',
+   'PYMODULE'),
+  ('pydantic.plugin._schema_validator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\plugin\\_schema_validator.py',
+   'PYMODULE'),
+  ('pydantic.root_model',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\root_model.py',
+   'PYMODULE'),
+  ('pydantic.schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\schema.py',
+   'PYMODULE'),
+  ('pydantic.tools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\tools.py',
+   'PYMODULE'),
+  ('pydantic.type_adapter',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\type_adapter.py',
+   'PYMODULE'),
+  ('pydantic.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\types.py',
+   'PYMODULE'),
+  ('pydantic.typing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\typing.py',
+   'PYMODULE'),
+  ('pydantic.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\utils.py',
+   'PYMODULE'),
+  ('pydantic.v1',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\__init__.py',
+   'PYMODULE'),
+  ('pydantic.v1._hypothesis_plugin',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\_hypothesis_plugin.py',
+   'PYMODULE'),
+  ('pydantic.v1.annotated_types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\annotated_types.py',
+   'PYMODULE'),
+  ('pydantic.v1.class_validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\class_validators.py',
+   'PYMODULE'),
+  ('pydantic.v1.color',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\color.py',
+   'PYMODULE'),
+  ('pydantic.v1.config',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\config.py',
+   'PYMODULE'),
+  ('pydantic.v1.dataclasses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\dataclasses.py',
+   'PYMODULE'),
+  ('pydantic.v1.datetime_parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\datetime_parse.py',
+   'PYMODULE'),
+  ('pydantic.v1.decorator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\decorator.py',
+   'PYMODULE'),
+  ('pydantic.v1.env_settings',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\env_settings.py',
+   'PYMODULE'),
+  ('pydantic.v1.error_wrappers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\error_wrappers.py',
+   'PYMODULE'),
+  ('pydantic.v1.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\errors.py',
+   'PYMODULE'),
+  ('pydantic.v1.fields',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\fields.py',
+   'PYMODULE'),
+  ('pydantic.v1.generics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\generics.py',
+   'PYMODULE'),
+  ('pydantic.v1.json',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\json.py',
+   'PYMODULE'),
+  ('pydantic.v1.main',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\main.py',
+   'PYMODULE'),
+  ('pydantic.v1.mypy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\mypy.py',
+   'PYMODULE'),
+  ('pydantic.v1.networks',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\networks.py',
+   'PYMODULE'),
+  ('pydantic.v1.parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\parse.py',
+   'PYMODULE'),
+  ('pydantic.v1.schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\schema.py',
+   'PYMODULE'),
+  ('pydantic.v1.tools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\tools.py',
+   'PYMODULE'),
+  ('pydantic.v1.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\types.py',
+   'PYMODULE'),
+  ('pydantic.v1.typing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\typing.py',
+   'PYMODULE'),
+  ('pydantic.v1.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\utils.py',
+   'PYMODULE'),
+  ('pydantic.v1.validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\validators.py',
+   'PYMODULE'),
+  ('pydantic.v1.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\v1\\version.py',
+   'PYMODULE'),
+  ('pydantic.validate_call_decorator',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\validate_call_decorator.py',
+   'PYMODULE'),
+  ('pydantic.validators',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\validators.py',
+   'PYMODULE'),
+  ('pydantic.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\version.py',
+   'PYMODULE'),
+  ('pydantic.warnings',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic\\warnings.py',
+   'PYMODULE'),
+  ('pydantic_core',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic_core\\__init__.py',
+   'PYMODULE'),
+  ('pydantic_core.core_schema',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pydantic_core\\core_schema.py',
+   'PYMODULE'),
+  ('pydoc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pydoc.py',
+   'PYMODULE'),
+  ('pydoc_data',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pydoc_data\\__init__.py',
+   'PYMODULE'),
+  ('pydoc_data.module_docs',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pydoc_data\\module_docs.py',
+   'PYMODULE'),
+  ('pydoc_data.topics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\pydoc_data\\topics.py',
+   'PYMODULE'),
+  ('pymysql',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\__init__.py',
+   'PYMODULE'),
+  ('pymysql._auth',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\_auth.py',
+   'PYMODULE'),
+  ('pymysql.charset',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\charset.py',
+   'PYMODULE'),
+  ('pymysql.connections',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\connections.py',
+   'PYMODULE'),
+  ('pymysql.constants',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\__init__.py',
+   'PYMODULE'),
+  ('pymysql.constants.CLIENT',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\CLIENT.py',
+   'PYMODULE'),
+  ('pymysql.constants.COMMAND',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\COMMAND.py',
+   'PYMODULE'),
+  ('pymysql.constants.CR',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\CR.py',
+   'PYMODULE'),
+  ('pymysql.constants.ER',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\ER.py',
+   'PYMODULE'),
+  ('pymysql.constants.FIELD_TYPE',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\FIELD_TYPE.py',
+   'PYMODULE'),
+  ('pymysql.constants.SERVER_STATUS',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\constants\\SERVER_STATUS.py',
+   'PYMODULE'),
+  ('pymysql.converters',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\converters.py',
+   'PYMODULE'),
+  ('pymysql.cursors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\cursors.py',
+   'PYMODULE'),
+  ('pymysql.err',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\err.py',
+   'PYMODULE'),
+  ('pymysql.optionfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\optionfile.py',
+   'PYMODULE'),
+  ('pymysql.protocol',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\protocol.py',
+   'PYMODULE'),
+  ('pymysql.times',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\pymysql\\times.py',
+   'PYMODULE'),
+  ('python_multipart',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\python_multipart\\__init__.py',
+   'PYMODULE'),
+  ('python_multipart.decoders',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\python_multipart\\decoders.py',
+   'PYMODULE'),
+  ('python_multipart.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\python_multipart\\exceptions.py',
+   'PYMODULE'),
+  ('python_multipart.multipart',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\python_multipart\\multipart.py',
+   'PYMODULE'),
+  ('queue',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\queue.py',
+   'PYMODULE'),
+  ('quopri',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\quopri.py',
+   'PYMODULE'),
+  ('random',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\random.py',
+   'PYMODULE'),
+  ('rlcompleter',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\rlcompleter.py',
+   'PYMODULE'),
+  ('runpy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\runpy.py',
+   'PYMODULE'),
+  ('secrets',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\secrets.py',
+   'PYMODULE'),
+  ('selectors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\selectors.py',
+   'PYMODULE'),
+  ('setuptools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._core_metadata',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_core_metadata.py',
+   'PYMODULE'),
+  ('setuptools._discovery',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_discovery.py',
+   'PYMODULE'),
+  ('setuptools._distutils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils._dataclass',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_dataclass.py',
+   'PYMODULE'),
+  ('setuptools._distutils._log',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_log.py',
+   'PYMODULE'),
+  ('setuptools._distutils._modified',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_modified.py',
+   'PYMODULE'),
+  ('setuptools._distutils._msvccompiler',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\_msvccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.archive_util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.ccompiler',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\ccompiler.py',
+   'PYMODULE'),
+  ('setuptools._distutils.cmd',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\cmd.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.bdist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\bdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.build_ext',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\build_ext.py',
+   'PYMODULE'),
+  ('setuptools._distutils.command.sdist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.numpy',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\numpy.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compat.py310',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.C.base',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\base.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.cygwin',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\cygwin.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.msvc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\msvc.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.unix',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\unix.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.C.zos',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\C\\zos.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers._modified',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\_modified.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers._util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.logging',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\logging.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.platform', '-', 'PYMODULE'),
+  ('setuptools._distutils.compilers.platform.detect',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\platform\\detect.py',
+   'PYMODULE'),
+  ('setuptools._distutils.compilers.platform.macos',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\compilers\\platform\\macos.py',
+   'PYMODULE'),
+  ('setuptools._distutils.core',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\core.py',
+   'PYMODULE'),
+  ('setuptools._distutils.debug',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\debug.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dir_util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\dir_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.dist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\dist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\errors.py',
+   'PYMODULE'),
+  ('setuptools._distutils.extension',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\extension.py',
+   'PYMODULE'),
+  ('setuptools._distutils.fancy_getopt',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\fancy_getopt.py',
+   'PYMODULE'),
+  ('setuptools._distutils.file_util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\file_util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.filelist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\filelist.py',
+   'PYMODULE'),
+  ('setuptools._distutils.log',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\log.py',
+   'PYMODULE'),
+  ('setuptools._distutils.spawn',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\spawn.py',
+   'PYMODULE'),
+  ('setuptools._distutils.sysconfig',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\sysconfig.py',
+   'PYMODULE'),
+  ('setuptools._distutils.text_file',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\text_file.py',
+   'PYMODULE'),
+  ('setuptools._distutils.util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\util.py',
+   'PYMODULE'),
+  ('setuptools._distutils.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\version.py',
+   'PYMODULE'),
+  ('setuptools._distutils.versionpredicate',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_distutils\\versionpredicate.py',
+   'PYMODULE'),
+  ('setuptools._entry_points',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_entry_points.py',
+   'PYMODULE'),
+  ('setuptools._imp',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_imp.py',
+   'PYMODULE'),
+  ('setuptools._importlib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_importlib.py',
+   'PYMODULE'),
+  ('setuptools._itertools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_itertools.py',
+   'PYMODULE'),
+  ('setuptools._normalization',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_normalization.py',
+   'PYMODULE'),
+  ('setuptools._path',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_path.py',
+   'PYMODULE'),
+  ('setuptools._reqs',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_reqs.py',
+   'PYMODULE'),
+  ('setuptools._shutil',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_shutil.py',
+   'PYMODULE'),
+  ('setuptools._static',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_static.py',
+   'PYMODULE'),
+  ('setuptools._vendor', '-', 'PYMODULE'),
+  ('setuptools._vendor.backports',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.backports.tarfile.compat.py38',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\backports\\tarfile\\compat\\py38.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco', '-', 'PYMODULE'),
+  ('setuptools._vendor.jaraco.context',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\context\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.functools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\functools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.jaraco.text',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\jaraco\\text\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.more',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\more.py',
+   'PYMODULE'),
+  ('setuptools._vendor.more_itertools.recipes',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\more_itertools\\recipes.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._elffile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_elffile.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._manylinux',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_manylinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._musllinux',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_musllinux.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._ranges',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_ranges.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging._tokenizer',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\_tokenizer.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.markers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\markers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.ranges',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\ranges.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.requirements',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\requirements.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.specifiers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\specifiers.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.tags',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\tags.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\utils.py',
+   'PYMODULE'),
+  ('setuptools._vendor.packaging.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\packaging\\version.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_parser.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._re',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_re.py',
+   'PYMODULE'),
+  ('setuptools._vendor.tomli._types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\tomli\\_types.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\__init__.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel.macosx_libfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\macosx_libfile.py',
+   'PYMODULE'),
+  ('setuptools._vendor.wheel.wheelfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\_vendor\\wheel\\wheelfile.py',
+   'PYMODULE'),
+  ('setuptools.archive_util',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\archive_util.py',
+   'PYMODULE'),
+  ('setuptools.command',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.command._requirestxt',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\_requirestxt.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_egg',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\bdist_egg.py',
+   'PYMODULE'),
+  ('setuptools.command.bdist_wheel',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\bdist_wheel.py',
+   'PYMODULE'),
+  ('setuptools.command.build',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\build.py',
+   'PYMODULE'),
+  ('setuptools.command.egg_info',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\egg_info.py',
+   'PYMODULE'),
+  ('setuptools.command.sdist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\sdist.py',
+   'PYMODULE'),
+  ('setuptools.command.setopt',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\command\\setopt.py',
+   'PYMODULE'),
+  ('setuptools.compat',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.compat.py310',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py310.py',
+   'PYMODULE'),
+  ('setuptools.compat.py311',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py311.py',
+   'PYMODULE'),
+  ('setuptools.compat.py39',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\compat\\py39.py',
+   'PYMODULE'),
+  ('setuptools.config',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._apply_pyprojecttoml',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_apply_pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\__init__.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.error_reporting',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\error_reporting.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.extra_validations',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\extra_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_exceptions.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.fastjsonschema_validations',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\fastjsonschema_validations.py',
+   'PYMODULE'),
+  ('setuptools.config._validate_pyproject.formats',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\_validate_pyproject\\formats.py',
+   'PYMODULE'),
+  ('setuptools.config.expand',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\expand.py',
+   'PYMODULE'),
+  ('setuptools.config.pyprojecttoml',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\pyprojecttoml.py',
+   'PYMODULE'),
+  ('setuptools.config.setupcfg',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\config\\setupcfg.py',
+   'PYMODULE'),
+  ('setuptools.depends',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\depends.py',
+   'PYMODULE'),
+  ('setuptools.discovery',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\discovery.py',
+   'PYMODULE'),
+  ('setuptools.dist',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\dist.py',
+   'PYMODULE'),
+  ('setuptools.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\errors.py',
+   'PYMODULE'),
+  ('setuptools.extension',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\extension.py',
+   'PYMODULE'),
+  ('setuptools.glob',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\glob.py',
+   'PYMODULE'),
+  ('setuptools.installer',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\installer.py',
+   'PYMODULE'),
+  ('setuptools.logging',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\logging.py',
+   'PYMODULE'),
+  ('setuptools.monkey',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\monkey.py',
+   'PYMODULE'),
+  ('setuptools.msvc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\msvc.py',
+   'PYMODULE'),
+  ('setuptools.unicode_utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\unicode_utils.py',
+   'PYMODULE'),
+  ('setuptools.version',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\version.py',
+   'PYMODULE'),
+  ('setuptools.warnings',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\warnings.py',
+   'PYMODULE'),
+  ('setuptools.wheel',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\wheel.py',
+   'PYMODULE'),
+  ('setuptools.windows_support',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\setuptools\\windows_support.py',
+   'PYMODULE'),
+  ('shlex',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\shlex.py',
+   'PYMODULE'),
+  ('shutil',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\shutil.py',
+   'PYMODULE'),
+  ('signal',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\signal.py',
+   'PYMODULE'),
+  ('site',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site.py',
+   'PYMODULE'),
+  ('socket',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\socket.py',
+   'PYMODULE'),
+  ('socketserver',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\socketserver.py',
+   'PYMODULE'),
+  ('ssl',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\ssl.py',
+   'PYMODULE'),
+  ('starlette',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\__init__.py',
+   'PYMODULE'),
+  ('starlette._exception_handler',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\_exception_handler.py',
+   'PYMODULE'),
+  ('starlette._utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\_utils.py',
+   'PYMODULE'),
+  ('starlette.applications',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\applications.py',
+   'PYMODULE'),
+  ('starlette.background',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\background.py',
+   'PYMODULE'),
+  ('starlette.concurrency',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\concurrency.py',
+   'PYMODULE'),
+  ('starlette.convertors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\convertors.py',
+   'PYMODULE'),
+  ('starlette.datastructures',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\datastructures.py',
+   'PYMODULE'),
+  ('starlette.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\exceptions.py',
+   'PYMODULE'),
+  ('starlette.formparsers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\formparsers.py',
+   'PYMODULE'),
+  ('starlette.middleware',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\__init__.py',
+   'PYMODULE'),
+  ('starlette.middleware.base',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\base.py',
+   'PYMODULE'),
+  ('starlette.middleware.body_limit',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\body_limit.py',
+   'PYMODULE'),
+  ('starlette.middleware.errors',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\errors.py',
+   'PYMODULE'),
+  ('starlette.middleware.exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\exceptions.py',
+   'PYMODULE'),
+  ('starlette.middleware.sessions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\middleware\\sessions.py',
+   'PYMODULE'),
+  ('starlette.requests',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\requests.py',
+   'PYMODULE'),
+  ('starlette.responses',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\responses.py',
+   'PYMODULE'),
+  ('starlette.routing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\routing.py',
+   'PYMODULE'),
+  ('starlette.staticfiles',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\staticfiles.py',
+   'PYMODULE'),
+  ('starlette.status',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\status.py',
+   'PYMODULE'),
+  ('starlette.types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\types.py',
+   'PYMODULE'),
+  ('starlette.websockets',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\starlette\\websockets.py',
+   'PYMODULE'),
+  ('statistics',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\statistics.py',
+   'PYMODULE'),
+  ('string',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\string\\__init__.py',
+   'PYMODULE'),
+  ('stringprep',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\stringprep.py',
+   'PYMODULE'),
+  ('subprocess',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\subprocess.py',
+   'PYMODULE'),
+  ('sysconfig',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\sysconfig\\__init__.py',
+   'PYMODULE'),
+  ('tarfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tarfile.py',
+   'PYMODULE'),
+  ('tempfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tempfile.py',
+   'PYMODULE'),
+  ('textwrap',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\textwrap.py',
+   'PYMODULE'),
+  ('threading',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\threading.py',
+   'PYMODULE'),
+  ('token',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\token.py',
+   'PYMODULE'),
+  ('tokenize',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tokenize.py',
+   'PYMODULE'),
+  ('tomllib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\__init__.py',
+   'PYMODULE'),
+  ('tomllib._parser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_parser.py',
+   'PYMODULE'),
+  ('tomllib._re',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_re.py',
+   'PYMODULE'),
+  ('tomllib._types',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tomllib\\_types.py',
+   'PYMODULE'),
+  ('tracemalloc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tracemalloc.py',
+   'PYMODULE'),
+  ('tty',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\tty.py',
+   'PYMODULE'),
+  ('typing',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\typing.py',
+   'PYMODULE'),
+  ('typing_extensions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\typing_extensions.py',
+   'PYMODULE'),
+  ('typing_inspection',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\typing_inspection\\__init__.py',
+   'PYMODULE'),
+  ('typing_inspection.introspection',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\typing_inspection\\introspection.py',
+   'PYMODULE'),
+  ('typing_inspection.typing_objects',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\site-packages\\typing_inspection\\typing_objects.py',
+   'PYMODULE'),
+  ('urllib',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\__init__.py',
+   'PYMODULE'),
+  ('urllib.error',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\error.py',
+   'PYMODULE'),
+  ('urllib.parse',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\parse.py',
+   'PYMODULE'),
+  ('urllib.request',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\request.py',
+   'PYMODULE'),
+  ('urllib.response',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\urllib\\response.py',
+   'PYMODULE'),
+  ('uuid',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\uuid.py',
+   'PYMODULE'),
+  ('webbrowser',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\webbrowser.py',
+   'PYMODULE'),
+  ('xml',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\__init__.py',
+   'PYMODULE'),
+  ('xml.parsers',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\parsers\\__init__.py',
+   'PYMODULE'),
+  ('xml.parsers.expat',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\parsers\\expat.py',
+   'PYMODULE'),
+  ('xml.sax',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\__init__.py',
+   'PYMODULE'),
+  ('xml.sax._exceptions',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\_exceptions.py',
+   'PYMODULE'),
+  ('xml.sax.expatreader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\expatreader.py',
+   'PYMODULE'),
+  ('xml.sax.handler',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\handler.py',
+   'PYMODULE'),
+  ('xml.sax.saxutils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\saxutils.py',
+   'PYMODULE'),
+  ('xml.sax.xmlreader',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\sax\\xmlreader.py',
+   'PYMODULE'),
+  ('xml.utils',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xml\\utils.py',
+   'PYMODULE'),
+  ('xmlrpc',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xmlrpc\\__init__.py',
+   'PYMODULE'),
+  ('xmlrpc.client',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\xmlrpc\\client.py',
+   'PYMODULE'),
+  ('zipfile',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zipfile\\__init__.py',
+   'PYMODULE'),
+  ('zipfile._path',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zipfile\\_path\\__init__.py',
+   'PYMODULE'),
+  ('zipfile._path._functools',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zipfile\\_path\\_functools.py',
+   'PYMODULE'),
+  ('zipfile._path.glob',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zipfile\\_path\\glob.py',
+   'PYMODULE'),
+  ('zipimport',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zipimport.py',
+   'PYMODULE'),
+  ('zoneinfo',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zoneinfo\\__init__.py',
+   'PYMODULE'),
+  ('zoneinfo._common',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zoneinfo\\_common.py',
+   'PYMODULE'),
+  ('zoneinfo._tzpath',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zoneinfo\\_tzpath.py',
+   'PYMODULE'),
+  ('zoneinfo._zoneinfo',
+   'C:\\Users\\CHEF '
+   'EQUIPE\\AppData\\Local\\Python\\pythoncore-3.15-64\\Lib\\zoneinfo\\_zoneinfo.py',
+   'PYMODULE')])
