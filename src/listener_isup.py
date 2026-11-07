@@ -420,11 +420,9 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Récupérer les correspondances de noms
             cursor.execute("SELECT * FROM devices_mapping")
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
 
-            # Récupérer la liste des terminaux uniques
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL ORDER BY device_id")
             devices = [{"key": row['device_id'], "name": mappings.get(row['device_id'], row['device_id'])} for row in cursor.fetchall()]
 
@@ -1150,7 +1148,7 @@ async def receive_attendance(request: Request):
         print("================================")
 
         employee_no = "UNKNOWN"
-        device_id = "HIK_TERMINAL_1"
+        device_id = None
         punch_type = "IN"
 
         try:
@@ -1176,17 +1174,31 @@ async def receive_attendance(request: Request):
                     employee_no = val
                     break
                     
-            ip_val = find_key(data, "ipAddress") or find_key(data, "deviceIpAddress") or find_key(data, "deviceID") or find_key(data, "serialNo")
+            # 1. Tentative de récupération d'un identifiant propre au terminal dans le payload
+            ip_val = find_key(data, "ipAddress") or find_key(data, "deviceIpAddress") or find_key(data, "deviceID") or find_key(data, "serialNo") or find_key(data, "macAddress")
             if ip_val:
                 device_id = ip_val
+        except Exception:
+            pass
+
+        # 2. Si aucun ID n'est dans le JSON, on analyse le contenu textuel brut pour différencier le 2ème terminal
+        # (Vous pouvez remplacer "terme_unique_terminal_2" par un mot, un numéro de série ou une chaîne spécifique présente dans le JSON du 2ème appareil)
+        if not device_id:
+            if "terme_unique_terminal_2" in raw_text:
+                device_id = "HIK_TERMINAL_2"
             else:
+                # Si c'est un autre flux ou si vous souhaitez attribuer par défaut au second terminal une clé unique distincte
+                # Astuce : Si le premier appareil utilise déjà l'IP 102.68.58.216, on peut vérifier si l'IP client correspond ou basculer sur un ID distinct
                 client_host = request.client.host if request.client else None
                 if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
-                    device_id = client_host
-        except Exception:
-            client_host = request.client.host if request.client else None
-            if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
-                device_id = client_host
+                    if client_host == "102.68.58.216":
+                        device_id = "102.68.58.216"
+                    else:
+                        device_id = client_host
+                else:
+                    # Si aucun moyen de différencier par IP, on utilise un identifiant distinct basé sur une portion du payload pour le séparer de HIK_TERMINAL_1
+                    # Exemple : s'il n'y a pas d'IP, forçons un identifiant distinct pour ce deuxième appareil :
+                    device_id = "TERMINAL_ABS_SHOP" 
 
         if employee_no == "UNKNOWN":
             for pattern in [
