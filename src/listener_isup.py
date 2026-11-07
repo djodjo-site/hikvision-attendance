@@ -139,13 +139,17 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                     <td class="fw-semibold">{emp['first_name']} {emp['last_name']}</td>
                     <td>{emp.get('department') or '-'}</td>
                     <td>{emp.get('schedule_name') or 'Standard (8h-17h)'}</td>
-                    <td class="pe-3">{status_badge}</td>
+                    <td>{status_badge}</td>
+                    <td class="pe-3 text-end">
+                        <a href="/employees/edit/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="/employees/delete/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet employé ?');"><i class="fa-solid fa-trash"></i></a>
+                    </td>
                 </tr>
             """
     else:
         emp_rows_html = """
                 <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">Aucun employé trouvé.</td>
+                    <td colspan="6" class="text-center py-4 text-muted">Aucun employé trouvé.</td>
                 </tr>
         """
 
@@ -286,7 +290,8 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                                             <th>Nom & Prénom</th>
                                             <th>Département</th>
                                             <th>Horaire assigné</th>
-                                            <th class="pe-3">Statut</th>
+                                            <th>Statut</th>
+                                            <th class="pe-3 text-end">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -831,13 +836,156 @@ async def add_employee(
                     first_name.strip(), 
                     last_name.strip(), 
                     department.strip() if department else None,
-                    True  # Valeur booléenne acceptée par PostgreSQL
+                    True
                 )
             )
             conn.commit()
         conn.close()
     except Exception as e:
         print(f"Erreur lors de l'ajout de l'employé : {e}")
+
+    return RedirectResponse(url="/", status_code=303)
+
+
+# --- ROUTE DE SUPPRESSION D'UN EMPLOYÉ ---
+@app.get("/employees/delete/{badge_id}")
+async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM employees WHERE badge_or_card_id = %s", (badge_id,))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la suppression de l'employé : {e}")
+
+    return RedirectResponse(url="/", status_code=303)
+
+
+# --- ROUTE D'AFFICHAGE DU FORMULAIRE DE MODIFICATION ---
+@app.get("/employees/edit/{badge_id}", response_class=HTMLResponse)
+async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    employee = None
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM employees WHERE badge_or_card_id = %s", (badge_id,))
+            employee = cursor.fetchone()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la récupération de l'employé : {e}")
+
+    if not employee:
+        return RedirectResponse(url="/", status_code=303)
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Modifier un Employé - Hikvision</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            body {{ background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }}
+            .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }}
+            .card {{ border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }}
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark shadow-sm py-3">
+            <div class="container-fluid px-4">
+                <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-user-pen me-2"></i> Modification d'un Employé</span>
+                <a href="/" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-house me-1"></i> Tableau de bord</a>
+            </div>
+        </nav>
+
+        <div class="container my-5" style="max-width: 600px;">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-user-gear me-2"></i> Modifier les informations de {employee['first_name']} {employee['last_name']}</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/employees/update/{badge_id}" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Matricule / ID Badge</label>
+                            <input type="text" class="form-control" name="badge_or_card_id" value="{employee['badge_or_card_id']}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Prénom</label>
+                            <input type="text" class="form-control" name="first_name" value="{employee['first_name']}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Nom</label>
+                            <input type="text" class="form-control" name="last_name" value="{employee['last_name']}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Département</label>
+                            <input type="text" class="form-control" name="department" value="{employee.get('department') or ''}">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="true" {'checked' if employee.get('is_active') else ''}>
+                            <label class="form-check-label small fw-bold text-secondary" for="is_active">Employé actif</label>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-check me-2"></i> Enregistrer</button>
+                            <a href="/" class="btn btn-secondary w-100 py-2 fw-semibold shadow-sm text-center text-decoration-none pt-2">Annuler</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+
+# --- ROUTE DE TRAITEMENT DE LA MODIFICATION ---
+@app.post("/employees/update/{old_badge_id}")
+async def update_employee(
+    old_badge_id: str,
+    badge_or_card_id: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    department: str = Form(None),
+    is_active: str = Form(None),
+    drh_session: str = Cookie(None)
+):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    is_active_bool = True if is_active == "true" else False
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE employees 
+                SET badge_or_card_id = %s, first_name = %s, last_name = %s, department = %s, is_active = %s
+                WHERE badge_or_card_id = %s
+                """,
+                (
+                    badge_or_card_id.strip(),
+                    first_name.strip(),
+                    last_name.strip(),
+                    department.strip() if department else None,
+                    is_active_bool,
+                    old_badge_id
+                )
+            )
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la mise à jour de l'employé : {e}")
 
     return RedirectResponse(url="/", status_code=303)
 
@@ -899,7 +1047,6 @@ async def receive_attendance(request: Request):
 
         print(f"-> Pointage validé | Matricule extrait : {employee_no} | Appareil : {device_id}")
 
-        # Heure locale calée précisément sur Kinshasa
         local_punch_time = datetime.now(ZoneInfo("Africa/Kinshasa")).replace(tzinfo=None)
 
         conn = get_db_connection()
