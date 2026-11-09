@@ -162,7 +162,9 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
             cursor.execute("SELECT * FROM devices_mapping")
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
             
-            for dev in raw_devs:
+            all_keys = set(raw_devs).union(set(mappings.keys()))
+            
+            for dev in all_keys:
                 devices.append({
                     "key": dev,
                     "name": mappings.get(dev, dev)
@@ -210,10 +212,13 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                             <button type="submit" class="btn btn-sm btn-success text-nowrap"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
                         </form>
                     </td>
+                    <td class="text-end pe-3">
+                        <a href="/devices/delete/{d['key']}" class="btn btn-sm btn-outline-danger" title="Supprimer ce terminal" onclick="return confirm('Voulez-vous vraiment supprimer ce terminal ?');"><i class="fa-solid fa-trash"></i></a>
+                    </td>
                 </tr>
             """
     else:
-        dev_rows_html = '<tr><td colspan="2" class="text-center py-3 text-muted">Aucun terminal détecté pour l\'instant. Effectuez un pointage.</td></tr>'
+        dev_rows_html = '<tr><td colspan="3" class="text-center py-3 text-muted">Aucun terminal détecté pour l\'instant. Effectuez un pointage.</td></tr>'
 
     html_content = f"""
     <!DOCTYPE html>
@@ -318,6 +323,7 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                                 <tr>
                                     <th class="ps-3">ID Technique / IP d'origine</th>
                                     <th>Nom Personnalisé (Ex: Porte Principale, Entrepôt...)</th>
+                                    <th class="text-end pe-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -411,6 +417,43 @@ async def rename_device(device_key: str = Form(...), friendly_name: str = Form(.
     return RedirectResponse(url="/", status_code=303)
 
 
+# --- ROUTE DE SUPPRESSION D'UN TERMINAL ---
+@app.get("/devices/delete/{device_key}")
+async def delete_device(device_key: str, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM devices_mapping WHERE device_key = %s", (device_key,))
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE device_id = %s", (device_key,))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la suppression du terminal : {e}")
+
+    return RedirectResponse(url="/", status_code=303)
+
+
+# --- ROUTE DE SUPPRESSION D'UN POINTAGE (LOG) ---
+@app.get("/reports/delete/{log_id}")
+async def delete_attendance_log(log_id: int, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE id = %s", (log_id,))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la suppression du pointage : {e}")
+
+    return RedirectResponse(url="/reports", status_code=303)
+
+
 @app.get("/reports", response_class=HTMLResponse)
 async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
@@ -436,13 +479,13 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
 
             base_query = """
                 SELECT 
+                    l.id,
                     l.badge_or_card_id,
                     COALESCE(e.first_name, 'Inconnu') as first_name,
                     COALESCE(e.last_name, '') as last_name,
                     COALESCE(e.department, '-') as department,
                     DATE(l.punch_timestamp) as punch_date,
-                    MIN(l.punch_timestamp) as check_in,
-                    MAX(l.punch_timestamp) as check_out,
+                    l.punch_timestamp as exact_punch,
                     l.device_id
                 FROM attendance_raw_logs l
                 LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
@@ -455,13 +498,44 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                 base_query += " AND l.device_id = %s"
                 params.append(device_id)
 
-            base_query += """
-                GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name, e.department, l.device_id
-                ORDER BY punch_date DESC, check_in ASC
-            """
+            base_query += " ORDER BY l.punch_timestamp DESC"
             
             cursor.execute(base_query, tuple(params))
-            reports = cursor.fetchall()
+            raw_logs = cursor.fetchall()
+
+            # Regroupement par employé et par jour pour faire la ligne d'arrivée / départ
+            grouped = {}
+            for r in raw_logs:
+                key = (r['badge_or_card_id'], str(r['punch_date']), r['device_id'])
+                if key not in grouped:
+                    grouped[key] = {
+                        "badge_or_card_id": r['badge_or_card_id'],
+                        "first_name": r['first_name'],
+                        "last_name": r['last_name'],
+                        "punch_date": r['punch_date'],
+                        "device_id": r['device_id'],
+                        "timestamps": []
+                    }
+                grouped[key]["timestamps"].append((r['id'], r['exact_punch']))
+
+            for key, data in grouped.items():
+                # Trier les timestamps chronologiquement pour identifier check_in et check_out
+                sorted_ts = sorted(data["timestamps"], key=lambda x: x[1])
+                check_in_item = sorted_ts[0]
+                check_out_item = sorted_ts[-1] if len(sorted_ts) > 1 else None
+
+                reports.append({
+                    "badge_or_card_id": data["badge_or_card_id"],
+                    "first_name": data["first_name"],
+                    "last_name": data["last_name"],
+                    "punch_date": data["punch_date"],
+                    "check_in_id": check_in_item[0],
+                    "check_in": check_in_item[1],
+                    "check_out_id": check_out_item[0] if check_out_item else None,
+                    "check_out": check_out_item[1] if check_out_item else None,
+                    "device_id": data["device_id"]
+                })
+
         conn.close()
     except Exception as e:
         print(f"Erreur lors de la génération du rapport : {e}")
@@ -478,6 +552,9 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             check_in_str = str(check_in).split(' ')[1] if check_in else '-'
             check_out_str = str(check_out).split(' ')[1] if check_out else '-'
 
+            # ID de suppression prioritaire (sur check_out si présent, sinon check_in)
+            del_id = row['check_out_id'] if row['check_out_id'] else row['check_in_id']
+
             if not check_in or not check_out or check_in == check_out:
                 report_rows_html += f"""
                             <tr>
@@ -489,6 +566,9 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td>-</td>
                                 <td><span class="badge bg-secondary">{dev_display}</span></td>
                                 <td><span class="badge bg-danger text-white">Absent (Hors plage)</span></td>
+                                <td class="no-print">
+                                    <a href="/reports/delete/{del_id}" class="btn btn-sm btn-outline-danger" title="Supprimer ce pointage" onclick="return confirm('Voulez-vous vraiment supprimer ce pointage ?');"><i class="fa-solid fa-trash"></i></a>
+                                </td>
                             </tr>
                 """
                 continue
@@ -530,12 +610,15 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                 <td><strong>{work_duration}</strong></td>
                                 <td><span class="badge bg-light text-dark border">{dev_display}</span></td>
                                 <td>{global_status}</td>
+                                <td class="no-print">
+                                    <a href="/reports/delete/{del_id}" class="btn btn-sm btn-outline-danger" title="Supprimer ce pointage" onclick="return confirm('Voulez-vous vraiment supprimer ce pointage ?');"><i class="fa-solid fa-trash"></i></a>
+                                </td>
                             </tr>
             """
     else:
         report_rows_html = """
                             <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">Aucun pointage trouvé pour cette période.</td>
+                                <td colspan="9" class="text-center py-4 text-muted">Aucun pointage trouvé pour cette période.</td>
                             </tr>
         """
 
@@ -676,6 +759,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                                     <th>Heures</th>
                                     <th>Terminal</th>
                                     <th>Statut de Conformité</th>
+                                    <th class="no-print">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1122,26 +1206,6 @@ async def update_employee(
     except Exception as e:
         print(f"Erreur lors de la mise à jour de l'employé : {e}")
 
-    return RedirectResponse(url="/", status_code=303)
-
-
-# --- ROUTE DE RENOMMAGE DES TERMINAUX ---
-@app.post("/devices/rename")
-async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
-    if drh_session != "authenticated":
-        return RedirectResponse(url="/login", status_code=303)
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO devices_mapping (device_key, friendly_name)
-                VALUES (%s, %s)
-                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
-            """, (device_key.strip(), friendly_name.strip()))
-            conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"Erreur lors du renommage du terminal : {e}")
     return RedirectResponse(url="/", status_code=303)
 
 
