@@ -80,6 +80,13 @@ async def login_page(error: str = None):
                 width: auto;
                 object-fit: contain;
             }}
+            .developer-footer {{
+                border-top: 1px solid #f1f5f9;
+                padding-top: 15px;
+                margin-top: 20px;
+                font-size: 0.8rem;
+                color: #64748b;
+            }}
         </style>
     </head>
     <body>
@@ -107,6 +114,10 @@ async def login_page(error: str = None):
                 </div>
                 <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-right-to-bracket me-2"></i> Se connecter</button>
             </form>
+
+            <div class="text-center developer-footer">
+                <i class="fa-solid fa-code me-1 text-primary"></i> Application développée par <strong>Ir Jonathan LUKOKI</strong>
+            </div>
         </div>
     </body>
     </html>
@@ -145,11 +156,9 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
             except Exception:
                 employees = []
                 
-            # Récupérer les terminaux uniques dans les logs
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL")
             raw_devs = [row['device_id'] for row in cursor.fetchall()]
             
-            # Récupérer les noms personnalisés
             cursor.execute("SELECT * FROM devices_mapping")
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
             
@@ -298,7 +307,6 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                 </div>
             </div>
 
-            <!-- GESTION & RENOMMAGE DES TERMINAUX -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-dark text-white py-3">
                     <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-network-wired me-2"></i> Gestion & Renommage des Terminaux de Pointage</h5>
@@ -1174,21 +1182,16 @@ async def receive_attendance(request: Request):
                     employee_no = val
                     break
                     
-            # 1. Tentative de récupération d'un identifiant propre au terminal dans le payload
             ip_val = find_key(data, "ipAddress") or find_key(data, "deviceIpAddress") or find_key(data, "deviceID") or find_key(data, "serialNo") or find_key(data, "macAddress")
             if ip_val:
                 device_id = ip_val
         except Exception:
             pass
 
-        # 2. Si aucun ID n'est dans le JSON, on analyse le contenu textuel brut pour différencier le 2ème terminal
-        # (Vous pouvez remplacer "terme_unique_terminal_2" par un mot, un numéro de série ou une chaîne spécifique présente dans le JSON du 2ème appareil)
         if not device_id:
             if "terme_unique_terminal_2" in raw_text:
                 device_id = "HIK_TERMINAL_2"
             else:
-                # Si c'est un autre flux ou si vous souhaitez attribuer par défaut au second terminal une clé unique distincte
-                # Astuce : Si le premier appareil utilise déjà l'IP 102.68.58.216, on peut vérifier si l'IP client correspond ou basculer sur un ID distinct
                 client_host = request.client.host if request.client else None
                 if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
                     if client_host == "102.68.58.216":
@@ -1196,8 +1199,6 @@ async def receive_attendance(request: Request):
                     else:
                         device_id = client_host
                 else:
-                    # Si aucun moyen de différencier par IP, on utilise un identifiant distinct basé sur une portion du payload pour le séparer de HIK_TERMINAL_1
-                    # Exemple : s'il n'y a pas d'IP, forçons un identifiant distinct pour ce deuxième appareil :
                     device_id = "TERMINAL_ABS_SHOP" 
 
         if employee_no == "UNKNOWN":
