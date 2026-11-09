@@ -759,7 +759,6 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             minutes = (total_seconds % 3600) // 60
             work_duration = f"{hours}h {minutes:02d}m"
 
-            # Calcul de validité basé sur l'horaire de l'employé
             max_arrival_dt = datetime.combine(date.today(), sched_start) + timedelta(minutes=tolerance)
             is_arrival_valid = check_in.time() <= max_arrival_dt.time()
             is_departure_valid = check_out_t >= sched_end
@@ -999,16 +998,11 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                 if badge not in emp_stats:
                     emp_stats[badge] = {
                         "name": name,
-                        "days_records": set(),
-                        "on_time": 0,
-                        "late": 0,
-                        "needs_review": 0,
-                        "missing_time": 0,
-                        "provisional_late_minutes": 0
+                        "present_days": 0,
+                        "late_days": 0,
+                        "absent_days": 0,
+                        "total_seconds": 0
                     }
-                
-                p_date = row['p_date']
-                emp_stats[badge]["days_records"].add(p_date)
                 
                 cin = row['check_in']
                 cout = row['check_out']
@@ -1017,39 +1011,37 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                 tolerance = row['late_tolerance_minutes'] if row['late_tolerance_minutes'] is not None else 30
                 
                 if not cin or not cout or cin == cout:
-                    emp_stats[badge]["missing_time"] += 1
-                    emp_stats[badge]["needs_review"] += 1
+                    emp_stats[badge]["absent_days"] += 1
                 else:
                     cin_t = cin.time()
                     cout_t = cout.time()
                     
-                    max_arrival_dt = datetime.combine(p_date, sched_start) + timedelta(minutes=tolerance)
+                    max_arrival_dt = datetime.combine(row['p_date'], sched_start) + timedelta(minutes=tolerance)
                     is_arr_valid = cin <= max_arrival_dt
-                    is_dep_valid = cout_t >= sched_end
                     
-                    if is_arr_valid and is_dep_valid:
-                        emp_stats[badge]["on_time"] += 1
+                    if is_arr_valid:
+                        emp_stats[badge]["present_days"] += 1
                     else:
-                        emp_stats[badge]["late"] += 1
-                        emp_stats[badge]["needs_review"] += 1
+                        emp_stats[badge]["late_days"] += 1
+                        emp_stats[badge]["present_days"] += 1
                         
-                        standard_arrival_dt = datetime.combine(p_date, sched_start)
-                        if cin > standard_arrival_dt:
-                            late_delta = cin - standard_arrival_dt
-                            late_mins = int(late_delta.total_seconds() // 60)
-                            if late_mins > 0:
-                                emp_stats[badge]["provisional_late_minutes"] += late_mins
+                    duration = cout - cin
+                    if duration.total_seconds() > 0:
+                        emp_stats[badge]["total_seconds"] += int(duration.total_seconds())
 
             for badge, data in emp_stats.items():
+                total_secs = data["total_seconds"]
+                hrs = total_secs // 3600
+                mins = (total_secs % 3600) // 60
+                formatted_hours = f"{hrs}h {mins:02d}m"
+
                 summary_rows.append({
                     "badge": badge,
                     "employee": data["name"],
-                    "days_with_records": len(data["days_records"]),
-                    "on_time": data["on_time"],
-                    "late": data["late"],
-                    "needs_review": data["needs_review"],
-                    "missing_time": data["missing_time"],
-                    "provisional_late_minutes": data["provisional_late_minutes"]
+                    "present_days": data["present_days"],
+                    "late_days": data["late_days"],
+                    "absent_days": data["absent_days"],
+                    "worked_hours": formatted_hours
                 })
                 
         conn.close()
@@ -1062,18 +1054,16 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
             summary_table_rows += f"""
                                 <tr>
                                     <td class="text-start ps-4 fw-semibold">{row['employee']}</td>
-                                    <td>{row['days_with_records']}</td>
-                                    <td><span class="badge bg-success bg-opacity-10 text-success">{row['on_time']}</span></td>
-                                    <td><span class="badge bg-warning bg-opacity-20 text-dark">{row['late']}</span></td>
-                                    <td><span class="badge bg-info bg-opacity-10 text-info">{row['needs_review']}</span></td>
-                                    <td><span class="badge bg-danger bg-opacity-10 text-danger">{row['missing_time']}</span></td>
-                                    <td class="pe-4 fw-bold text-secondary">{row['provisional_late_minutes']} min</td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success">{row['present_days']}</span></td>
+                                    <td><span class="badge bg-danger bg-opacity-10 text-danger">{row['absent_days']}</span></td>
+                                    <td><span class="badge bg-warning bg-opacity-20 text-dark">{row['late_days']}</span></td>
+                                    <td class="pe-4 fw-bold text-primary">{row['worked_hours']}</td>
                                 </tr>
             """
     else:
         summary_table_rows = """
                                 <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">Aucune donnée trouvée pour cette période.</td>
+                                    <td colspan="5" class="text-center py-4 text-muted">Aucune donnée trouvée pour cette période.</td>
                                 </tr>
         """
 
@@ -1195,13 +1185,11 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                         <table class="table table-striped table-hover mb-0 align-middle text-center">
                             <thead>
                                 <tr>
-                                    <th class="text-start ps-4">Employee</th>
-                                    <th>Days with Records</th>
-                                    <th>On Time*</th>
-                                    <th>Late*</th>
-                                    <th>Needs Review</th>
-                                    <th>Missing Time</th>
-                                    <th class="pe-4">Provisional Late Minutes</th>
+                                    <th class="text-start ps-4">Employé</th>
+                                    <th>Jours Présents</th>
+                                    <th>Jours Absents</th>
+                                    <th>Jours en Retard</th>
+                                    <th class="pe-4">Heures Travaillées (Mois)</th>
                                 </tr>
                             </thead>
                             <tbody>
