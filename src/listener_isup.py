@@ -2,19 +2,21 @@ import sys
 import os
 import json
 import re
+import io
+import pandas as pd
 from zoneinfo import ZoneInfo
 
 # Ajout dynamique du dossier parent dans le chemin Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from fastapi import FastAPI, Request, Response, Form, Cookie
-from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
+from fastapi import FastAPI, Request, Response, Form, Cookie, UploadFile, File
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse, StreamingResponse
 from datetime import datetime, date, time, timedelta
 from database.db_config import get_db_connection
 
 app = FastAPI(title="Hikvision Attendance System")
 
-# Route directe et infaillible pour servir le logo ABS
+# Route directe pour servir le logo ABS
 @app.get("/static/logo.png")
 async def get_logo():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -172,7 +174,7 @@ async def logout():
     return response
 
 @app.get("/", response_class=HTMLResponse)
-async def dashboard(request: Request, drh_session: str = Cookie(None)):
+async def dashboard(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -188,6 +190,7 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                     SELECT e.*, s.name as schedule_name 
                     FROM employees e 
                     LEFT JOIN work_schedules s ON e.schedule_id = s.id
+                    ORDER BY e.first_name ASC
                 """)
                 employees = cursor.fetchall()
             except Exception:
@@ -216,6 +219,12 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
         conn.close()
     except Exception as e:
         print(f"Attention - Connexion BDD non établie : {e}")
+
+    alert_html = ""
+    if error:
+        alert_html = f'<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-exclamation me-2"></i>{error}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
+    elif success:
+        alert_html = f'<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-check me-2"></i>{success}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
 
     emp_rows_html = ""
     if employees:
@@ -334,6 +343,8 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
         </nav>
 
         <div class="container-fluid px-4 my-4">
+            {alert_html}
+
             <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <div class="card border-start border-primary border-4">
@@ -368,6 +379,27 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                             <h3 class="fw-bold text-info mb-0">{len(devices)} détecté(s)</h3>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- SECTION IMPORTATION MASSIVE EXCEL/CSV -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-file-excel me-2 text-success"></i> Importation de la liste des Employés (Fichier Excel / CSV)</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/employees/import" method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <label class="form-label text-secondary small fw-bold">Sélectionner un fichier (.xlsx, .xls, .csv)</label>
+                            <input type="file" class="form-control" name="file" accept=".xlsx, .xls, .csv" required>
+                            <div class="form-text">
+                                Colonnes attendues dans votre fichier : <code>badge</code> (ou matricule), <code>prenom</code>, <code>nom</code>, <code>departement</code>.
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-file-import me-2"></i> Importer les Employés</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -519,10 +551,77 @@ async def dashboard(request: Request, drh_session: str = Cookie(None)):
                 </div>
             </div>
         </div>
+        <script href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     """
     return HTMLResponse(content=html_content)
+
+# --- ROUTE IMPORTATION D'EMPLOYÉS (EXCEL / CSV) ---
+@app.post("/employees/import")
+async def import_employees(file: UploadFile = File(...), drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    try:
+        contents = await file.read()
+        filename = file.filename.lower()
+
+        if filename.endswith('.csv'):
+            df = pd.read_csv(io.BytesIO(contents))
+        elif filename.endswith('.xlsx') or filename.endswith('.xls'):
+            df = pd.read_excel(io.BytesIO(contents))
+        else:
+            return RedirectResponse(url="/?error=Format+de+fichier+non+supporté.+Veuillez+utiliser+.xlsx,+xls+ou+.csv", status_code=303)
+
+        # Nettoyage et normalisation des noms de colonnes
+        df.columns = [str(col).strip().lower() for col in df.columns]
+
+        # Détection des correspondances des colonnes
+        col_badge = next((c for c in df.columns if c in ['badge', 'badge_id', 'matricule', 'id', 'cardno', 'card_no', 'employee_id']), None)
+        col_prenom = next((c for c in df.columns if c in ['prenom', 'prénom', 'first_name', 'firstname', 'prenoms']), None)
+        col_nom = next((c for c in df.columns if c in ['nom', 'last_name', 'lastname', 'name']), None)
+        col_dept = next((c for c in df.columns if c in ['departement', 'département', 'department', 'service', 'dept']), None)
+
+        if not col_badge or not col_nom:
+            return RedirectResponse(
+                url="/?error=Le+fichier+doit+contenir+au+moins+les+colonnes+matricule+(ou+badge)+et+nom", 
+                status_code=303
+            )
+
+        imported_count = 0
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            for _, row in df.iterrows():
+                badge_val = str(row[col_badge]).strip() if pd.notna(row[col_badge]) else ""
+                if not badge_val or badge_val.lower() == 'nan':
+                    continue
+
+                prenom_val = str(row[col_prenom]).strip() if col_prenom and pd.notna(row[col_prenom]) else ""
+                nom_val = str(row[col_nom]).strip() if col_nom and pd.notna(row[col_nom]) else ""
+                dept_val = str(row[col_dept]).strip() if col_dept and pd.notna(row[col_dept]) else None
+
+                cursor.execute(
+                    """
+                    INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
+                    VALUES (%s, %s, %s, %s, TRUE)
+                    ON CONFLICT (badge_or_card_id) DO UPDATE 
+                    SET first_name = EXCLUDED.first_name, 
+                        last_name = EXCLUDED.last_name, 
+                        department = EXCLUDED.department
+                    """,
+                    (badge_val, prenom_val, nom_val, dept_val)
+                )
+                imported_count += 1
+            conn.commit()
+        conn.close()
+
+        return RedirectResponse(url=f"/?success={imported_count}+employé(s)+importé(s)+avec+succès", status_code=303)
+
+    except Exception as e:
+        print(f"Erreur lors de l'importation Excel : {e}")
+        return RedirectResponse(url=f"/?error=Erreur+de+lecture+du+fichier:+{str(e)}", status_code=303)
+
 
 # --- ROUTES GESTION DES HORAIRES ---
 @app.post("/schedules/add")
@@ -583,7 +682,6 @@ async def rename_device(device_key: str = Form(...), friendly_name: str = Form(.
     return RedirectResponse(url="/", status_code=303)
 
 
-# --- ROUTE DE SUPPRESSION D'UN TERMINAL ---
 @app.get("/devices/delete/{device_key}")
 async def delete_device(device_key: str, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
@@ -602,7 +700,6 @@ async def delete_device(device_key: str, drh_session: str = Cookie(None)):
     return RedirectResponse(url="/", status_code=303)
 
 
-# --- ROUTE DE SUPPRESSION D'UN POINTAGE (LOG) ---
 @app.get("/reports/delete/{log_id}")
 async def delete_attendance_log(log_id: int, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
@@ -805,6 +902,9 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
         selected = 'selected' if device_id == d['key'] else ''
         device_options += f'<option value="{d["key"]}" {selected}>{d["name"]}</option>'
 
+    dev_param = f"&device_id={device_id}" if device_id else ""
+    export_excel_url = f"/reports/export/excel?start_date={start_date}&end_date={end_date}{dev_param}"
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="fr">
@@ -922,7 +1022,10 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fa-solid fa-clipboard-user me-2 text-primary"></i> Détail des pointages ({len(reports)} enregistrements)</h5>
-                    <button onclick="window.print();" class="btn btn-outline-dark btn-sm no-print fw-semibold"><i class="fa-solid fa-print me-1"></i> Imprimer / Exporter PDF</button>
+                    <div class="d-flex gap-2 no-print">
+                        <a href="{export_excel_url}" class="btn btn-success btn-sm fw-semibold"><i class="fa-solid fa-file-excel me-1"></i> Exporter Excel (.xlsx)</a>
+                        <button onclick="window.print();" class="btn btn-outline-dark btn-sm fw-semibold"><i class="fa-solid fa-print me-1"></i> Imprimer / PDF</button>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -952,6 +1055,109 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
     </html>
     """
     return HTMLResponse(content=html_content)
+
+
+# --- ROUTE D'EXPORTATION EXCEL DU RAPPORT JOURNALIER ---
+@app.get("/reports/export/excel")
+async def export_reports_excel(start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    today_str = date.today().isoformat()
+    start_date = start_date or today_str
+    end_date = end_date or today_str
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM devices_mapping")
+            mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
+
+            base_query = """
+                SELECT 
+                    l.badge_or_card_id,
+                    COALESCE(e.first_name, 'Inconnu') as first_name,
+                    COALESCE(e.last_name, '') as last_name,
+                    COALESCE(e.department, '-') as department,
+                    s.start_time as schedule_start,
+                    s.end_time as schedule_end,
+                    s.late_tolerance_minutes,
+                    DATE(l.punch_timestamp) as punch_date,
+                    l.punch_timestamp as exact_punch,
+                    l.device_id
+                FROM attendance_raw_logs l
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
+                LEFT JOIN work_schedules s ON e.schedule_id = s.id
+                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+            """
+            params = [start_date, end_date]
+            if device_id and device_id != "ALL":
+                base_query += " AND l.device_id = %s"
+                params.append(device_id)
+
+            base_query += " ORDER BY l.punch_timestamp DESC"
+            cursor.execute(base_query, tuple(params))
+            raw_logs = cursor.fetchall()
+        conn.close()
+
+        grouped = {}
+        for r in raw_logs:
+            key = (r['badge_or_card_id'], str(r['punch_date']), r['device_id'])
+            if key not in grouped:
+                grouped[key] = {"timestamps": [], "row": r}
+            grouped[key]["timestamps"].append(r['exact_punch'])
+
+        export_data = []
+        for key, info in grouped.items():
+            r = info["row"]
+            sorted_ts = sorted(info["timestamps"])
+            cin = sorted_ts[0]
+            cout = sorted_ts[-1] if len(sorted_ts) > 1 else None
+
+            cin_str = str(cin).split(' ')[1] if cin else '-'
+            cout_str = str(cout).split(' ')[1] if cout else '-'
+            emp_name = f"{r['first_name']} {r['last_name']}".strip()
+            dev_display = mappings.get(r['device_id'], r['device_id'])
+
+            if not cin or not cout or cin == cout:
+                work_duration = "-"
+                status = "Absent (Incomplet)"
+            else:
+                duration = cout - cin
+                total_seconds = int(duration.total_seconds())
+                hrs = total_seconds // 3600
+                mins = (total_seconds % 3600) // 60
+                work_duration = f"{hrs}h {mins:02d}m"
+                status = "Présent (Conforme)"
+
+            export_data.append({
+                "Date": str(r['punch_date']),
+                "Matricule": r['badge_or_card_id'],
+                "Employé": emp_name,
+                "Département": r['department'],
+                "Arrivée": cin_str,
+                "Départ": cout_str,
+                "Heures Travaillées": work_duration,
+                "Terminal": dev_display,
+                "Statut": status
+            })
+
+        df = pd.DataFrame(export_data)
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Rapport Pointage')
+        output.seek(0)
+
+        filename = f"Rapport_Pointage_{start_date}_au_{end_date}.xlsx"
+        return StreamingResponse(
+            output, 
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    except Exception as e:
+        print(f"Erreur export Excel : {e}")
+        return RedirectResponse(url="/reports", status_code=303)
 
 
 @app.get("/summary", response_class=HTMLResponse)
@@ -1067,6 +1273,8 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                                 </tr>
         """
 
+    export_summary_url = f"/summary/export/excel?start_date={start_date}&end_date={end_date}"
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="fr">
@@ -1178,7 +1386,10 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fa-solid fa-clipboard-user me-2 text-primary"></i> Rapport Récapitulatif par Employé ({len(summary_rows)} collaborateurs)</h5>
-                    <button onclick="window.print();" class="btn btn-outline-dark btn-sm no-print fw-semibold"><i class="fa-solid fa-print me-1"></i> Imprimer / Exporter PDF</button>
+                    <div class="d-flex gap-2 no-print">
+                        <a href="{export_summary_url}" class="btn btn-success btn-sm fw-semibold"><i class="fa-solid fa-file-excel me-1"></i> Exporter Synthèse (.xlsx)</a>
+                        <button onclick="window.print();" class="btn btn-outline-dark btn-sm fw-semibold"><i class="fa-solid fa-print me-1"></i> Imprimer / PDF</button>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -1189,7 +1400,7 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                                     <th>Jours Présents</th>
                                     <th>Jours Absents</th>
                                     <th>Jours en Retard</th>
-                                    <th class="pe-4">Heures Travaillées (Mois)</th>
+                                    <th class="pe-4">Heures Travaillées</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1204,6 +1415,104 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
     </html>
     """
     return HTMLResponse(content=html_content)
+
+
+# --- ROUTE D'EXPORTATION EXCEL DE LA SYNTHÈSE ---
+@app.get("/summary/export/excel")
+async def export_summary_excel(start_date: str = None, end_date: str = None, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    today_str = date.today().isoformat()
+    start_date = start_date or today_str
+    end_date = end_date or today_str
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            query = """
+                SELECT 
+                    COALESCE(e.first_name, 'Inconnu') as first_name,
+                    COALESCE(e.last_name, '') as last_name,
+                    l.badge_or_card_id,
+                    s.start_time as schedule_start,
+                    s.end_time as schedule_end,
+                    s.late_tolerance_minutes,
+                    DATE(l.punch_timestamp) as p_date,
+                    MIN(l.punch_timestamp) as check_in,
+                    MAX(l.punch_timestamp) as check_out
+                FROM attendance_raw_logs l
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
+                LEFT JOIN work_schedules s ON e.schedule_id = s.id
+                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+                GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name, s.start_time, s.end_time, s.late_tolerance_minutes
+            """
+            cursor.execute(query, (start_date, end_date))
+            raw_logs = cursor.fetchall()
+        conn.close()
+
+        emp_stats = {}
+        for row in raw_logs:
+            badge = row['badge_or_card_id']
+            name = f"{row['first_name']} {row['last_name']}".strip()
+
+            if badge not in emp_stats:
+                emp_stats[badge] = {
+                    "name": name,
+                    "present_days": 0,
+                    "late_days": 0,
+                    "absent_days": 0,
+                    "total_seconds": 0
+                }
+
+            cin = row['check_in']
+            cout = row['check_out']
+            sched_start = row['schedule_start'] or time(8, 0)
+            tolerance = row['late_tolerance_minutes'] if row['late_tolerance_minutes'] is not None else 30
+
+            if not cin or not cout or cin == cout:
+                emp_stats[badge]["absent_days"] += 1
+            else:
+                max_arr = datetime.combine(row['p_date'], sched_start) + timedelta(minutes=tolerance)
+                if cin <= max_arr:
+                    emp_stats[badge]["present_days"] += 1
+                else:
+                    emp_stats[badge]["late_days"] += 1
+                    emp_stats[badge]["present_days"] += 1
+
+                duration = cout - cin
+                if duration.total_seconds() > 0:
+                    emp_stats[badge]["total_seconds"] += int(duration.total_seconds())
+
+        export_summary = []
+        for badge, data in emp_stats.items():
+            hrs = data["total_seconds"] // 3600
+            mins = (data["total_seconds"] % 3600) // 60
+            export_summary.append({
+                "Matricule": badge,
+                "Employé": data["name"],
+                "Jours Présents": data["present_days"],
+                "Jours Absents": data["absent_days"],
+                "Jours en Retard": data["late_days"],
+                "Total Heures Travaillées": f"{hrs}h {mins:02d}m"
+            })
+
+        df = pd.DataFrame(export_summary)
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Synthèse Présences')
+        output.seek(0)
+
+        filename = f"Synthese_Presence_{start_date}_au_{end_date}.xlsx"
+        return StreamingResponse(
+            output, 
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+    except Exception as e:
+        print(f"Erreur export Synthèse Excel : {e}")
+        return RedirectResponse(url="/summary", status_code=303)
 
 
 @app.post("/employees/add")
@@ -1243,7 +1552,6 @@ async def add_employee(
     return RedirectResponse(url="/", status_code=303)
 
 
-# --- ROUTE DE SUPPRESSION D'UN EMPLOYÉ ---
 @app.get("/employees/delete/{badge_id}")
 async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
@@ -1261,7 +1569,6 @@ async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
     return RedirectResponse(url="/", status_code=303)
 
 
-# --- ROUTE D'AFFICHAGE DU FORMULAIRE DE MODIFICATION ---
 @app.get("/employees/edit/{badge_id}", response_class=HTMLResponse)
 async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None)):
     if drh_session != "authenticated":
@@ -1359,7 +1666,6 @@ async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None)):
     return HTMLResponse(content=html_content)
 
 
-# --- ROUTE DE TRAITEMENT DE LA MODIFICATION ---
 @app.post("/employees/update/{old_badge_id}")
 async def update_employee(
     old_badge_id: str,
@@ -1454,7 +1760,6 @@ async def receive_attendance(request: Request):
                     employee_no = match.group(1).strip()
                     break
 
-        # FILTRE STRICT : Si aucun matricule réel n'est détecté, on ignore la requête et on ne l'enregistre pas
         if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
             return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
 
