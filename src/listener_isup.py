@@ -190,7 +190,7 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                     SELECT e.*, s.name as schedule_name 
                     FROM employees e 
                     LEFT JOIN work_schedules s ON e.schedule_id = s.id
-                    ORDER BY e.first_name ASC
+                    ORDER BY COALESCE(NULLIF(TRIM(e.department), ''), 'Non assigné') ASC, e.first_name ASC, e.last_name ASC
                 """)
                 employees = cursor.fetchall()
             except Exception:
@@ -227,26 +227,47 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
         alert_html = f'<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-check me-2"></i>{success}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
 
     emp_rows_html = ""
+    dept_options_html = '<option value="ALL">Tous les départements</option>'
     if employees:
+        from collections import OrderedDict
+        grouped_emps = OrderedDict()
         for emp in employees:
-            is_act = emp.get('is_active', True)
-            status_badge = '<span class="badge bg-success bg-opacity-10 text-success">Actif</span>' if is_act else '<span class="badge bg-danger bg-opacity-10 text-danger">Inactif</span>'
+            dept_label = (emp.get('department') or '').strip() or 'Non assigné'
+            if dept_label not in grouped_emps:
+                grouped_emps[dept_label] = []
+            grouped_emps[dept_label].append(emp)
+
+        for dept_label, dept_emps in grouped_emps.items():
+            dept_options_html += f'<option value="{dept_label}">{dept_label} ({len(dept_emps)})</option>'
             emp_rows_html += f"""
-                <tr>
-                    <td class="ps-3"><code>{emp['badge_or_card_id']}</code></td>
-                    <td class="fw-semibold">{emp['first_name']} {emp['last_name']}</td>
-                    <td>{emp.get('department') or '-'}</td>
-                    <td><span class="badge bg-light text-dark border">{emp.get('schedule_name') or 'Standard'}</span></td>
-                    <td>{status_badge}</td>
-                    <td class="pe-3 text-end">
-                        <a href="/employees/edit/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="/employees/delete/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet employé ?');"><i class="fa-solid fa-trash"></i></a>
+                <tr class="table-light dept-group-header" data-dept="{dept_label}">
+                    <td colspan="6" class="ps-3 py-2 fw-bold text-primary border-top border-bottom">
+                        <i class="fa-solid fa-building me-2"></i> Département : {dept_label}
+                        <span class="badge bg-primary bg-opacity-10 text-primary ms-2 dept-count-badge">{len(dept_emps)} employé(s)</span>
                     </td>
                 </tr>
             """
+            for emp in dept_emps:
+                is_act = emp.get('is_active', True)
+                status_badge = '<span class="badge bg-success bg-opacity-10 text-success">Actif</span>' if is_act else '<span class="badge bg-danger bg-opacity-10 text-danger">Inactif</span>'
+                full_name = f"{emp['first_name']} {emp['last_name']}".strip()
+                search_text = f"{full_name} {emp['badge_or_card_id']} {dept_label}".lower()
+                emp_rows_html += f"""
+                    <tr class="emp-data-row" data-dept="{dept_label}" data-search="{search_text}">
+                        <td class="ps-3"><code>{emp['badge_or_card_id']}</code></td>
+                        <td class="fw-semibold">{full_name}</td>
+                        <td><span class="badge bg-secondary bg-opacity-10 text-secondary">{dept_label}</span></td>
+                        <td><span class="badge bg-light text-dark border">{emp.get('schedule_name') or 'Standard'}</span></td>
+                        <td>{status_badge}</td>
+                        <td class="pe-3 text-end">
+                            <a href="/employees/edit/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a href="/employees/delete/{emp['badge_or_card_id']}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet employé ?');"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                """
     else:
         emp_rows_html = """
-                <tr>
+                <tr id="no-emp-initial">
                     <td colspan="6" class="text-center py-4 text-muted">Aucun employé trouvé.</td>
                 </tr>
         """
@@ -537,13 +558,32 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
 
                 <div class="col-lg-8">
                     <div class="card mt-0">
-                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fa-solid fa-users-gear me-2 text-primary"></i> Liste des Employés</h5>
+                        <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fa-solid fa-users-gear me-2 text-primary"></i> Liste des Employés par Département</h5>
                             <a href="/summary" class="btn btn-sm btn-outline-primary fw-semibold"><i class="fa-solid fa-chart-pie me-1"></i> Voir la synthèse globale</a>
+                        </div>
+                        <div class="card-body bg-light border-bottom py-2 px-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                        <input type="text" id="empSearchInput" class="form-control" placeholder="Filtrer par nom, prénom ou matricule...">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearEmpSearch" title="Effacer"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="empDeptFilter" class="form-select form-select-sm">
+                                        {dept_options_html}
+                                    </select>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <span id="empFilterCounter" class="badge bg-primary bg-opacity-10 text-primary w-100 py-2">{len(employees)} au total</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
+                                <table class="table table-hover align-middle mb-0" id="employeesTable">
                                     <thead>
                                         <tr>
                                             <th class="ps-3">Matricule / Badge</th>
@@ -554,17 +594,152 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                                             <th class="pe-3 text-end">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="employeesTableBody">
                                         {emp_rows_html}
+                                        <tr id="noEmpSearchResult" style="display: none;">
+                                            <td colspan="6" class="text-center py-4 text-muted">Aucun employé ne correspond à votre recherche.</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-2 px-3 gap-2">
+                            <small class="text-muted fw-semibold" id="empPaginationInfo">Affichage 0 - 0 sur 0</small>
+                            <nav aria-label="Pagination des employés">
+                                <ul class="pagination pagination-sm mb-0" id="empPaginationControls"></ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {{
+                const ITEMS_PER_PAGE = 10;
+                let currentPage = 1;
+
+                const searchInput = document.getElementById("empSearchInput");
+                const clearSearchBtn = document.getElementById("clearEmpSearch");
+                const deptFilter = document.getElementById("empDeptFilter");
+                const allEmpRows = Array.from(document.querySelectorAll(".emp-data-row"));
+                const allDeptHeaders = Array.from(document.querySelectorAll(".dept-group-header"));
+                const noResultRow = document.getElementById("noEmpSearchResult");
+                const paginationInfo = document.getElementById("empPaginationInfo");
+                const paginationControls = document.getElementById("empPaginationControls");
+                const filterCounter = document.getElementById("empFilterCounter");
+
+                function updateEmployeesTable() {{
+                    const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+                    const selectedDept = deptFilter ? deptFilter.value : "ALL";
+
+                    // 1. Filtrer les employés correspondants
+                    const matchingRows = allEmpRows.filter(row => {{
+                        const rowDept = row.getAttribute("data-dept");
+                        const rowSearch = row.getAttribute("data-search") || "";
+                        const matchDept = (selectedDept === "ALL" || rowDept === selectedDept);
+                        const matchQuery = (!query || rowSearch.includes(query));
+                        return matchDept && matchQuery;
+                    }});
+
+                    const totalItems = matchingRows.length;
+                    const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+                    if (currentPage > totalPages) currentPage = totalPages;
+
+                    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                    const endIndex = startIndex + ITEMS_PER_PAGE;
+                    const visiblePageRows = new Set(matchingRows.slice(startIndex, endIndex));
+
+                    // 2. Afficher uniquement les lignes de la page courante
+                    const visibleDepts = new Set();
+                    allEmpRows.forEach(row => {{
+                        if (visiblePageRows.has(row)) {{
+                            row.style.display = "";
+                            visibleDepts.add(row.getAttribute("data-dept"));
+                        }} else {{
+                            row.style.display = "none";
+                        }}
+                    }});
+
+                    // 3. Afficher uniquement les en-têtes des départements ayant au moins un employé sur la page
+                    allDeptHeaders.forEach(header => {{
+                        const hDept = header.getAttribute("data-dept");
+                        header.style.display = visibleDepts.has(hDept) ? "" : "none";
+                    }});
+
+                    // 4. Gestion message vide et compteurs
+                    if (noResultRow) {{
+                        noResultRow.style.display = (allEmpRows.length > 0 && totalItems === 0) ? "" : "none";
+                    }}
+                    if (filterCounter) {{
+                        filterCounter.textContent = totalItems + " employé(s)";
+                    }}
+                    if (paginationInfo) {{
+                        if (totalItems === 0) {{
+                            paginationInfo.textContent = "Affichage 0 - 0 sur 0";
+                        }} else {{
+                            const showFrom = startIndex + 1;
+                            const showTo = Math.min(endIndex, totalItems);
+                            paginationInfo.textContent = `Affichage ${{showFrom}} - ${{showTo}} sur ${{totalItems}}`;
+                        }}
+                    }}
+
+                    // 5. Générer les boutons de pagination
+                    if (paginationControls) {{
+                        paginationControls.innerHTML = "";
+                        if (totalItems > ITEMS_PER_PAGE) {{
+                            const createPageItem = (label, pageNum, disabled = false, active = false) => {{
+                                const li = document.createElement("li");
+                                li.className = "page-item" + (disabled ? " disabled" : "") + (active ? " active" : "");
+                                const a = document.createElement("a");
+                                a.className = "page-link";
+                                a.href = "#";
+                                a.innerHTML = label;
+                                a.addEventListener("click", function(e) {{
+                                    e.preventDefault();
+                                    if (!disabled && !active) {{
+                                        currentPage = pageNum;
+                                        updateEmployeesTable();
+                                    }}
+                                }});
+                                li.appendChild(a);
+                                return li;
+                            }};
+
+                            paginationControls.appendChild(createPageItem("&laquo;", currentPage - 1, currentPage === 1));
+
+                            for (let p = 1; p <= totalPages; p++) {{
+                                paginationControls.appendChild(createPageItem(String(p), p, false, p === currentPage));
+                            }}
+
+                            paginationControls.appendChild(createPageItem("&raquo;", currentPage + 1, currentPage === totalPages));
+                        }}
+                    }}
+                }}
+
+                if (searchInput) {{
+                    searchInput.addEventListener("input", function() {{
+                        currentPage = 1;
+                        updateEmployeesTable();
+                    }});
+                }}
+                if (clearSearchBtn) {{
+                    clearSearchBtn.addEventListener("click", function() {{
+                        searchInput.value = "";
+                        currentPage = 1;
+                        updateEmployeesTable();
+                    }});
+                }}
+                if (deptFilter) {{
+                    deptFilter.addEventListener("change", function() {{
+                        currentPage = 1;
+                        updateEmployeesTable();
+                    }});
+                }}
+
+                updateEmployeesTable();
+            }});
+        </script>
     </body>
     </html>
     """
