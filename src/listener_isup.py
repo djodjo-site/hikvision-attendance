@@ -551,7 +551,7 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                 </div>
             </div>
         </div>
-        <script href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>
     """
@@ -574,10 +574,8 @@ async def import_employees(file: UploadFile = File(...), drh_session: str = Cook
         else:
             return RedirectResponse(url="/?error=Format+de+fichier+non+supporté.+Veuillez+utiliser+.xlsx,+xls+ou+.csv", status_code=303)
 
-        # Nettoyage et normalisation des noms de colonnes
         df.columns = [str(col).strip().lower() for col in df.columns]
 
-        # Détection des correspondances des colonnes
         col_badge = next((c for c in df.columns if c in ['badge', 'badge_id', 'matricule', 'id', 'cardno', 'card_no', 'employee_id']), None)
         col_prenom = next((c for c in df.columns if c in ['prenom', 'prénom', 'first_name', 'firstname', 'prenoms']), None)
         col_nom = next((c for c in df.columns if c in ['nom', 'last_name', 'lastname', 'name']), None)
@@ -1720,7 +1718,7 @@ async def receive_attendance(request: Request):
         print("================================")
 
         employee_no = "UNKNOWN"
-        device_id = "Terminal Chantier"
+        device_id = None
         punch_type = "IN"
 
         try:
@@ -1739,6 +1737,13 @@ async def receive_attendance(request: Request):
                         if res:
                             return res
                 return None
+
+            # Extraction dynamique du serialNo ou de l'identifiant du boîtier
+            for key_candidate in ["serialNo", "serialNumber", "deviceID", "macAddress", "ipAddress", "deviceIpAddress"]:
+                val = find_key(data, key_candidate)
+                if val:
+                    device_id = val
+                    break
 
             for key_candidate in ["employeeNoString", "employeeNo", "cardNo", "employeeID", "userID"]:
                 val = find_key(data, key_candidate)
@@ -1760,10 +1765,16 @@ async def receive_attendance(request: Request):
                     employee_no = match.group(1).strip()
                     break
 
+        # Filtre strict anti-spam / bots externes
         if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
             return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
 
-        print(f"-> Pointage validé | Matricule extrait : {employee_no} | Appareil : {device_id}")
+        # Si aucun ID n'est trouvé dans le flux, on recourt à l'IP source
+        if not device_id:
+            client_host = request.client.host if request.client else "UNKNOWN_IP"
+            device_id = f"IP_{client_host}"
+
+        print(f"-> Pointage validé | Matricule : {employee_no} | Appareil : {device_id}")
 
         local_punch_time = datetime.now(ZoneInfo("Africa/Kinshasa")).replace(tzinfo=None)
 
