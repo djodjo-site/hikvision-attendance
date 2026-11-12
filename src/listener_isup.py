@@ -464,8 +464,21 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
 
             <!-- SECTION TERMINAUX -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-secondary text-white py-3">
-                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-network-wired me-2"></i> Gestion & Renommage des Terminaux de Pointage</h5>
+                <div class="card-header bg-secondary text-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-network-wired me-2"></i> Gestion & Ajout Manuel des Terminaux de Pointage</h5>
+                </div>
+                <div class="card-body bg-light border-bottom p-3">
+                    <form action="/devices/add" method="POST" class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control form-control-sm" name="device_key" placeholder="ID Technique (ex: Terminal_Porte1 ou Serial No)" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control form-control-sm" name="friendly_name" placeholder="Nom personnalisé (ex: Porte Principale)" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-sm btn-primary w-100 fw-semibold"><i class="fa-solid fa-plus me-1"></i> Ajouter</button>
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -660,6 +673,25 @@ async def delete_schedule(sched_id: int, drh_session: str = Cookie(None)):
         print(f"Erreur suppression horaire : {e}")
     return RedirectResponse(url="/", status_code=303)
 
+
+@app.post("/devices/add")
+async def add_device_manual(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO devices_mapping (device_key, friendly_name)
+                VALUES (%s, %s)
+                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
+            """, (device_key.strip(), friendly_name.strip()))
+            conn.commit()
+        conn.close()
+        return RedirectResponse(url="/?success=Terminal+ajouté+avec+succès", status_code=303)
+    except Exception as e:
+        print(f"Erreur ajout manuel terminal : {e}")
+        return RedirectResponse(url=f"/?error=Erreur+lors+de+l'ajout+du+terminal:+{str(e)}", status_code=303)
 
 @app.post("/devices/rename")
 async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
@@ -1721,6 +1753,11 @@ async def receive_attendance(request: Request):
         device_id = None
         punch_type = "IN"
 
+        # 1. Priorité absolue au paramètre d'URL ?dev=... (ex: /api/v1/attendance-webhook?dev=Porte1)
+        query_dev = request.query_params.get("dev")
+        if query_dev:
+            device_id = f"Terminal_{query_dev.strip()}"
+
         try:
             data = json.loads(raw_text)
             def find_key(obj, key):
@@ -1738,12 +1775,13 @@ async def receive_attendance(request: Request):
                             return res
                 return None
 
-            # Extraction dynamique du serialNo ou de l'identifiant du boîtier
-            for key_candidate in ["serialNo", "serialNumber", "deviceID", "macAddress", "ipAddress", "deviceIpAddress"]:
-                val = find_key(data, key_candidate)
-                if val:
-                    device_id = val
-                    break
+            # 2. Extraction dynamique du serialNo ou de l'identifiant du boîtier si ?dev absent
+            if not device_id:
+                for key_candidate in ["serialNo", "serialNumber", "deviceID", "deviceSerialNo", "macAddress", "ipAddress", "deviceIpAddress"]:
+                    val = find_key(data, key_candidate)
+                    if val:
+                        device_id = val
+                        break
 
             for key_candidate in ["employeeNoString", "employeeNo", "cardNo", "employeeID", "userID"]:
                 val = find_key(data, key_candidate)
@@ -1752,6 +1790,17 @@ async def receive_attendance(request: Request):
                     break
         except Exception:
             pass
+
+        # Extraction fallback par Regex (JSON malformé ou XML Hikvision)
+        if not device_id:
+            for dev_pattern in [
+                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
+                r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
+            ]:
+                m_dev = re.search(dev_pattern, raw_text)
+                if m_dev:
+                    device_id = m_dev.group(1).strip()
+                    break
 
         if employee_no == "UNKNOWN":
             for pattern in [
@@ -1769,9 +1818,13 @@ async def receive_attendance(request: Request):
         if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
             return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
 
-        # Si aucun ID n'est trouvé dans le flux, on recourt à l'IP source
+        # 3. Fallback ultime sur l'IP source réelle (via proxy Render X-Forwarded-For)
         if not device_id:
-            client_host = request.client.host if request.client else "UNKNOWN_IP"
+            forwarded = request.headers.get("x-forwarded-for")
+            if forwarded:
+                client_host = forwarded.split(",")[0].strip()
+            else:
+                client_host = request.client.host if request.client else "UNKNOWN_IP"
             device_id = f"IP_{client_host}"
 
         print(f"-> Pointage validé | Matricule : {employee_no} | Appareil : {device_id}")
@@ -1780,6 +1833,15 @@ async def receive_attendance(request: Request):
 
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # Enregistrement automatique du terminal dans devices_mapping s'il est nouveau
+            cursor.execute(
+                """
+                INSERT INTO devices_mapping (device_key, friendly_name)
+                VALUES (%s, %s)
+                ON CONFLICT (device_key) DO NOTHING
+                """,
+                (device_id, device_id)
+            )
             cursor.execute(
                 """
                 INSERT INTO attendance_raw_logs (badge_or_card_id, punch_timestamp, device_id, punch_type)
