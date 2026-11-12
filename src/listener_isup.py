@@ -1446,19 +1446,7 @@ async def receive_attendance(request: Request):
         except Exception:
             pass
 
-        if not device_id:
-            if "terme_unique_terminal_2" in raw_text:
-                device_id = "HIK_TERMINAL_2"
-            else:
-                client_host = request.client.host if request.client else None
-                if client_host and client_host not in ("127.0.0.1", "localhost", "::1"):
-                    if client_host == "102.68.58.216":
-                        device_id = "102.68.58.216"
-                    else:
-                        device_id = client_host
-                else:
-                    device_id = "TERMINAL_ABS_SHOP" 
-
+        # FILTRE STRICT : Si le corps de la requête ne contient aucun matricule valide (requêtes de bots ou tests externes), ignorer
         if employee_no == "UNKNOWN":
             for pattern in [
                 r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
@@ -1470,6 +1458,14 @@ async def receive_attendance(request: Request):
                 if match:
                     employee_no = match.group(1).strip()
                     break
+
+        # Si aucun employé réel n'est détecté, c'est une requête parasite externe : on ignore sans enregistrer
+        if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
+            return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
+
+        # Forcer l'attribution au seul terminal autorisé (ex: votre Terminal Chantier)
+        # Si vous préférez utiliser le nom personnalisé ou l'ID fixe de votre terminal chantier :
+        device_id = "Terminal Chantier"
 
         print(f"-> Pointage validé | Matricule extrait : {employee_no} | Appareil : {device_id}")
 
