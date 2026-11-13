@@ -2224,7 +2224,7 @@ async def receive_attendance(request: Request):
         # Fallback Regex pour XML ou JSON non standard
         if not device_id:
             for dev_pattern in [
-                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
+                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
                 r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
             ]:
                 m_dev = re.search(dev_pattern, raw_text)
