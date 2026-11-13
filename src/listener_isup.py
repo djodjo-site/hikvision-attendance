@@ -166,7 +166,6 @@ def get_best_matching_schedule(check_in_dt, assigned_schedules, all_schedules):
         st_minutes = st.hour * 60 + st.minute
         
         diff = abs(cin_minutes - st_minutes)
-        # Gestion du roulement autour de minuit
         diff = min(diff, 1440 - diff)
 
         if diff < min_diff:
@@ -271,6 +270,167 @@ async def logout():
     response.delete_cookie(key="company_id")
     return response
 
+# --- ROUTE DE GESTION DES ENTREPRISES (MULTI-TENANT) ---
+@app.get("/companies", response_class=HTMLResponse)
+async def manage_companies(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+
+    companies = []
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM companies ORDER BY id ASC")
+            companies = cursor.fetchall()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur chargement entreprises : {e}")
+
+    alert_html = ""
+    if error:
+        alert_html = f'<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-exclamation me-2"></i>{error}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
+    elif success:
+        alert_html = f'<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-check me-2"></i>{success}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
+
+    comp_rows_html = ""
+    for c in companies:
+        is_current = str(c['id']) == str(company_id)
+        current_badge = '<span class="badge bg-success">Entreprise Active</span>' if is_current else f'<a href="/companies/switch/{c["id"]}" class="btn btn-sm btn-outline-primary">Sélectionner</a>'
+        comp_rows_html += f"""
+            <tr>
+                <td class="ps-3"><code>{c['id']}</code></td>
+                <td class="fw-semibold">{c['name']}</td>
+                <td><code>?company={c['slug']}</code></td>
+                <td>{current_badge}</td>
+                <td class="text-end pe-3">
+                    <a href="/companies/delete/{c['id']}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Attention : Supprimer cette entreprise supprimera aussi tous ses employés et pointages associés. Continuer ?');"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        """
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestion des Entreprises - Hikvision</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            body {{ background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }}
+            .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }}
+            .card {{ border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }}
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark shadow-sm py-3">
+            <div class="container-fluid px-4">
+                <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-building me-2"></i> Gestion Multi-Entreprises</span>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="/" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-house me-1"></i> Tableau de bord</a>
+                    <a href="/logout" class="btn btn-danger btn-sm px-3 ms-2"><i class="fa-solid fa-right-from-bracket me-1"></i> Déconnexion</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container my-4" style="max-width: 900px;">
+            {alert_html}
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-plus me-2"></i> Ajouter une entreprise</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="/companies/add" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small fw-bold">Nom de l'entreprise</label>
+                                    <input type="text" class="form-control" name="name" placeholder="ex: Entreprise B" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small fw-bold">Slug Webhook</label>
+                                    <input type="text" class="form-control" name="slug" placeholder="ex: entreprise-b" required>
+                                    <div class="form-text small">Utilisé dans l'URL : <code>?company=slug</code></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-check me-2"></i> Créer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white py-3">
+                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-list me-2"></i> Liste des Entreprises Enregistrées</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-3">ID</th>
+                                            <th>Nom</th>
+                                            <th>Paramètre Webhook</th>
+                                            <th>Statut</th>
+                                            <th class="text-end pe-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {comp_rows_html}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+@app.post("/companies/add")
+async def add_company(name: str = Form(...), slug: str = Form(...), drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO companies (name, slug) VALUES (%s, %s)", (name.strip(), slug.strip().lower()))
+            conn.commit()
+        conn.close()
+        return RedirectResponse(url="/companies?success=Entreprise+ajoutée+avec+succès", status_code=303)
+    except Exception as e:
+        return RedirectResponse(url=f"/companies?error=Erreur+lors+de+l'ajout:+{str(e)}", status_code=303)
+
+@app.get("/companies/switch/{comp_id}")
+async def switch_company(comp_id: int, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    response = RedirectResponse(url="/", status_code=303)
+    response.set_cookie(key="company_id", value=str(comp_id), httponly=True)
+    return response
+
+@app.get("/companies/delete/{comp_id}")
+async def delete_company(comp_id: int, drh_session: str = Cookie(None)):
+    if drh_session != "authenticated":
+        return RedirectResponse(url="/login", status_code=303)
+    if comp_id == 1:
+        return RedirectResponse(url="/companies?error=Impossible+de+supprimer+l'entreprise+principale", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM companies WHERE id = %s", (comp_id,))
+            conn.commit()
+        conn.close()
+        response = RedirectResponse(url="/companies?success=Entreprise+supprimée", status_code=303)
+        response.set_cookie(key="company_id", value="1", httponly=True)
+        return response
+    except Exception as e:
+        return RedirectResponse(url=f"/companies?error=Erreur:+{str(e)}", status_code=303)
+
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
@@ -280,10 +440,16 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
     devices = []
     schedules = []
     emp_schedules_map = {}
+    current_company_name = "Entreprise"
     
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            cursor.execute("SELECT name FROM companies WHERE id = %s", (company_id,))
+            comp_res = cursor.fetchone()
+            if comp_res:
+                current_company_name = comp_res['name']
+
             try:
                 cursor.execute("""
                     SELECT e.*
@@ -301,7 +467,6 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
             except Exception:
                 schedules = []
                 
-            # Récupération des horaires multiples assignés
             try:
                 cursor.execute("""
                     SELECT es.badge_or_card_id, s.name, s.start_time, s.end_time
@@ -491,8 +656,12 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
     <body>
         <nav class="navbar navbar-dark shadow-sm py-3">
             <div class="container-fluid px-4">
-                <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i> Suivi de Présence & Pointage Hikvision</span>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i> Suivi de Présence & Pointage Hikvision</span>
+                    <span class="badge bg-warning text-dark px-3 py-2"><i class="fa-solid fa-building me-1"></i> {current_company_name}</span>
+                </div>
                 <div class="d-flex align-items-center gap-2">
+                    <a href="/companies" class="btn btn-warning btn-sm px-3 fw-semibold"><i class="fa-solid fa-building-user me-1"></i> Changer d'entreprise</a>
                     <a href="/" class="btn btn-outline-light btn-sm px-3 active"><i class="fa-solid fa-house me-1"></i> Tableau de bord</a>
                     <a href="/reports" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-calendar-days me-1"></i> Rapport Journalier</a>
                     <a href="/summary" class="btn btn-light btn-sm px-3 fw-semibold"><i class="fa-solid fa-chart-pie me-1"></i> Synthèse Employés</a>
@@ -1086,11 +1255,9 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL AND company_id = %s ORDER BY device_id", (company_id,))
             devices = [{"key": row['device_id'], "name": mappings.get(row['device_id'], row['device_id'])} for row in cursor.fetchall()]
 
-            # Récupérer tous les horaires disponibles pour l'entreprise
             cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
-            # Récupérer la cartographie des horaires assignés par employé
             cursor.execute("""
                 SELECT es.badge_or_card_id, s.*
                 FROM employee_schedules es
@@ -1955,7 +2122,6 @@ async def add_employee(
                 )
             )
             
-            # Insérer les horaires multiples attribués
             for s_id in schedule_ids:
                 cursor.execute(
                     """
@@ -2149,7 +2315,6 @@ async def update_employee(
                 )
             )
 
-            # Re-créer les horaires multiples
             cursor.execute("DELETE FROM employee_schedules WHERE badge_or_card_id = %s", (new_badge,))
             for s_id in schedule_ids:
                 cursor.execute(
@@ -2182,7 +2347,6 @@ async def receive_attendance(request: Request):
         device_id = None
         punch_type = "IN"
 
-        # 1. Priorité au paramètre d'URL ?dev=... et ?company=...
         query_dev = request.query_params.get("dev")
         if query_dev:
             device_id = f"Terminal_{query_dev.strip()}"
@@ -2221,10 +2385,10 @@ async def receive_attendance(request: Request):
         except Exception:
             pass
 
-        # Fallback Regex pour XML ou JSON non standard
+        # Regex corrigées avec des échappements corrects de guillemets
         if not device_id:
             for dev_pattern in [
-               r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*[\'"]?([^\'"<>,\s]+)[\'"]?'
+                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
                 r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
             ]:
                 m_dev = re.search(dev_pattern, raw_text)
@@ -2234,7 +2398,7 @@ async def receive_attendance(request: Request):
 
         if employee_no == "UNKNOWN":
             for pattern in [
-               r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?'
+                r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
                 r'<employeeNoString>([^<]+)</employeeNoString>',
                 r'<employeeNo>([^<]+)</employeeNo>',
                 r'<cardNo>([^<]+)</cardNo>'
