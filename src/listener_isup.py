@@ -25,7 +25,7 @@ async def get_logo():
         return FileResponse(logo_path)
     return Response(status_code=404)
 
-# Identifiants du Super-Admin (Vous, propriétaire du SaaS)
+# Identifiants du Super-Admin global (Propriétaire du SaaS)
 SUPERADMIN_USER = "superadmin"
 SUPERADMIN_PASS = "masterpassword123"
 
@@ -34,7 +34,7 @@ def init_database_tables():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # 1. Création de la table des entreprises
+            # 1. Table des entreprises clientes
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS companies (
                     id SERIAL PRIMARY KEY,
@@ -64,7 +64,7 @@ def init_database_tables():
                 )
             """)
 
-            # Comptes par défaut pour l'entreprise 1 (admin / superviseur)
+            # Comptes par défaut pour l'entreprise 1
             cursor.execute("""
                 INSERT INTO company_users (company_id, username, password, role)
                 VALUES 
@@ -178,7 +178,7 @@ def get_best_matching_schedule(check_in_dt, assigned_schedules, all_schedules):
     return best_sched
 
 
-# --- PAGE DE CONNEXION COMMUNE (SUPER-ADMIN & CLIENTS) ---
+# --- PAGE DE CONNEXION COMMUNE ---
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(error: str = None):
     error_html = f'<div class="alert alert-danger py-2 mb-3 text-center small">{error}</div>' if error else ''
@@ -259,13 +259,11 @@ async def login_page(error: str = None):
 
 @app.post("/login")
 async def login_action(username: str = Form(...), password: str = Form(...)):
-    # 1. Vérification Super-Admin (Vous)
     if username == SUPERADMIN_USER and password == SUPERADMIN_PASS:
         response = RedirectResponse(url="/superadmin", status_code=303)
         response.set_cookie(key="saas_session", value="superadmin", httponly=True)
         return response
 
-    # 2. Vérification Utilisateur d'entreprise (Admin général ou Superviseur)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -277,7 +275,7 @@ async def login_action(username: str = Form(...), password: str = Form(...)):
             response = RedirectResponse(url="/", status_code=303)
             response.set_cookie(key="saas_session", value="company_user", httponly=True)
             response.set_cookie(key="company_id", value=str(user['company_id']), httponly=True)
-            response.set_cookie(key="user_role", value=user['role'], httponly=True) # 'admin' ou 'supervisor'
+            response.set_cookie(key="user_role", value=user['role'], httponly=True)
             return response
     except Exception as e:
         print(f"Erreur login : {e}")
@@ -293,7 +291,7 @@ async def logout():
     return response
 
 
-# --- 1. PORTAIL PRINCIPAL DU SUPER-ADMIN (POUR VOUS) ---
+# --- 1. PORTAIL SUPER-ADMIN ---
 @app.get("/superadmin", response_class=HTMLResponse)
 async def superadmin_dashboard(request: Request, error: str = None, success: str = None, saas_session: str = Cookie(None)):
     if saas_session != "superadmin":
@@ -330,8 +328,8 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
                 <td><span class="badge bg-info text-dark">{c['emp_count']} employé(s)</span></td>
                 <td>{status_badge}</td>
                 <td class="text-end pe-3">
-                    <a href="/superadmin/login-as/{c['id']}" class="btn btn-sm btn-outline-primary me-1" title="Accéder à l'espace client"><i class="fa-solid fa-right-to-bracket"></i> Gérer</a>
-                    <a href="/superadmin/company/delete/{c['id']}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Attention : Supprimer cette entreprise supprimera aussi tous ses employés et pointages associés. Continuer ?');"><i class="fa-solid fa-trash"></i></a>
+                    <a href="/superadmin/login-as/{c['id']}" class="btn btn-sm btn-outline-primary me-1" title="Gérer"><i class="fa-solid fa-right-to-bracket"></i> Gérer</a>
+                    <a href="/superadmin/company/delete/{c['id']}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer cette entreprise ?');"><i class="fa-solid fa-trash"></i></a>
                 </td>
             </tr>
         """
@@ -342,7 +340,7 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Portail Super-Admin - SaaS</title>
+        <title>Portail Super-Admin</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -354,10 +352,8 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
     <body>
         <nav class="navbar navbar-dark shadow-sm py-3">
             <div class="container-fluid px-4">
-                <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-crown me-2 text-warning"></i> Portail Commercial Super-Admin (SaaS)</span>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="/logout" class="btn btn-danger btn-sm px-3"><i class="fa-solid fa-right-from-bracket me-1"></i> Déconnexion</a>
-                </div>
+                <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-crown me-2 text-warning"></i> Portail Super-Admin (SaaS)</span>
+                <a href="/logout" class="btn btn-danger btn-sm px-3"><i class="fa-solid fa-right-from-bracket me-1"></i> Déconnexion</a>
             </div>
         </nav>
 
@@ -367,34 +363,32 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
                 <div class="col-md-5">
                     <div class="card">
                         <div class="card-header bg-primary text-white py-3">
-                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-building-circle-plus me-2"></i> Créer une Entreprise Cliente</h5>
+                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-building-circle-plus me-2"></i> Créer une Entreprise</h5>
                         </div>
                         <div class="card-body p-4">
                             <form action="/superadmin/company/add" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label text-secondary small fw-bold">Nom de l'entreprise</label>
-                                    <input type="text" class="form-control" name="name" placeholder="ex: Entreprise B" required>
+                                    <input type="text" class="form-control" name="name" placeholder="ex: CIIG" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label text-secondary small fw-bold">Slug Webhook</label>
-                                    <input type="text" class="form-control" name="slug" placeholder="ex: entreprise-b" required>
-                                    <div class="form-text small">Utilisé dans l'URL : <code>?company=slug</code></div>
+                                    <input type="text" class="form-control" name="slug" placeholder="ex: ciig" required>
                                 </div>
                                 <hr class="my-3">
                                 <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Nom utilisateur Admin Général</label>
-                                    <input type="text" class="form-control" name="admin_user" placeholder="ex: admin_b" required>
+                                    <label class="form-label text-secondary small fw-bold">Admin Général (Username)</label>
+                                    <input type="text" class="form-control" name="admin_user" placeholder="ex: admin" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label text-secondary small fw-bold">Mot de passe Admin Général</label>
                                     <input type="password" class="form-control" name="admin_pass" placeholder="••••••••" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Mot de passe Superviseur (Lecture seule)</label>
+                                    <label class="form-label text-secondary small fw-bold">Mot de passe Superviseur</label>
                                     <input type="password" class="form-control" name="super_pass" placeholder="••••••••" required>
-                                    <div class="form-text small">Nom d'utilisateur par défaut : <code>superviseur</code></div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-check me-2"></i> Créer le compte client</button>
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-check me-2"></i> Créer</button>
                             </form>
                         </div>
                     </div>
@@ -402,7 +396,7 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
                 <div class="col-md-7">
                     <div class="card">
                         <div class="card-header bg-dark text-white py-3">
-                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-list me-2"></i> Entreprises Clientes Abonnées ({len(companies)})</h5>
+                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-list me-2"></i> Entreprises Clientes ({len(companies)})</h5>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -433,14 +427,7 @@ async def superadmin_dashboard(request: Request, error: str = None, success: str
     return HTMLResponse(content=html_content)
 
 @app.post("/superadmin/company/add")
-async def superadmin_add_company(
-    name: str = Form(...), 
-    slug: str = Form(...), 
-    admin_user: str = Form(...), 
-    admin_pass: str = Form(...), 
-    super_pass: str = Form(...), 
-    saas_session: str = Cookie(None)
-):
+async def superadmin_add_company(name: str = Form(...), slug: str = Form(...), admin_user: str = Form(...), admin_pass: str = Form(...), super_pass: str = Form(...), saas_session: str = Cookie(None)):
     if saas_session != "superadmin":
         return RedirectResponse(url="/login", status_code=303)
     try:
@@ -449,22 +436,14 @@ async def superadmin_add_company(
             cursor.execute("INSERT INTO companies (name, slug) VALUES (%s, %s) RETURNING id", (name.strip(), slug.strip().lower()))
             comp_id = cursor.fetchone()['id']
 
-            # Création de l'admin général de l'entreprise
-            cursor.execute(
-                "INSERT INTO company_users (company_id, username, password, role) VALUES (%s, %s, %s, 'admin')", 
-                (comp_id, admin_user.strip(), admin_pass.strip())
-            )
-            # Création du superviseur de l'entreprise (lecture seule)
-            cursor.execute(
-                "INSERT INTO company_users (company_id, username, password, role) VALUES (%s, %s, %s, 'supervisor')", 
-                (comp_id, "superviseur", super_pass.strip())
-            )
+            cursor.execute("INSERT INTO company_users (company_id, username, password, role) VALUES (%s, %s, %s, 'admin')", (comp_id, admin_user.strip(), admin_pass.strip()))
+            cursor.execute("INSERT INTO company_users (company_id, username, password, role) VALUES (%s, %s, %s, 'supervisor')", (comp_id, "superviseur", super_pass.strip()))
 
             conn.commit()
         conn.close()
-        return RedirectResponse(url="/superadmin?success=Entreprise+et+comptes+créés+avec+succès", status_code=303)
+        return RedirectResponse(url="/superadmin?success=Entreprise+créée+avec+succès", status_code=303)
     except Exception as e:
-        return RedirectResponse(url=f"/superadmin?error=Erreur+lors+de+l'ajout:+{str(e)}", status_code=303)
+        return RedirectResponse(url=f"/superadmin?error=Erreur:+{str(e)}", status_code=303)
 
 @app.get("/superadmin/login-as/{comp_id}")
 async def superadmin_login_as(comp_id: int, saas_session: str = Cookie(None)):
@@ -481,7 +460,7 @@ async def superadmin_delete_company(comp_id: int, saas_session: str = Cookie(Non
     if saas_session != "superadmin":
         return RedirectResponse(url="/login", status_code=303)
     if comp_id == 1:
-        return RedirectResponse(url="/superadmin?error=Impossible+de+supprimer+l'entreprise+de+démo", status_code=303)
+        return RedirectResponse(url="/superadmin?error=Impossible+de+supprimer+la+démo", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -513,37 +492,28 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
             if comp_res:
                 current_company_name = comp_res['name']
 
-            try:
-                cursor.execute("""
-                    SELECT e.*
-                    FROM employees e 
-                    WHERE e.company_id = %s
-                    ORDER BY COALESCE(NULLIF(TRIM(e.department), ''), 'Non assigné') ASC, e.first_name ASC, e.last_name ASC
-                """, (company_id,))
-                employees = cursor.fetchall()
-            except Exception:
-                employees = []
+            cursor.execute("""
+                SELECT e.*
+                FROM employees e 
+                WHERE e.company_id = %s
+                ORDER BY COALESCE(NULLIF(TRIM(e.department), ''), 'Non assigné') ASC, e.first_name ASC, e.last_name ASC
+            """, (company_id,))
+            employees = cursor.fetchall()
                 
-            try:
-                cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
-                schedules = cursor.fetchall()
-            except Exception:
-                schedules = []
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
+            schedules = cursor.fetchall()
                 
-            try:
-                cursor.execute("""
-                    SELECT es.badge_or_card_id, s.name, s.start_time, s.end_time
-                    FROM employee_schedules es
-                    JOIN work_schedules s ON es.schedule_id = s.id
-                    WHERE s.company_id = %s
-                """, (company_id,))
-                for row in cursor.fetchall():
-                    b_id = row['badge_or_card_id']
-                    if b_id not in emp_schedules_map:
-                        emp_schedules_map[b_id] = []
-                    emp_schedules_map[b_id].append(f"{row['name']} ({str(row['start_time'])[:5]}-{str(row['end_time'])[:5]})")
-            except Exception as e:
-                print(f"Erreur chargement horaires employés : {e}")
+            cursor.execute("""
+                SELECT es.badge_or_card_id, s.name, s.start_time, s.end_time
+                FROM employee_schedules es
+                JOIN work_schedules s ON es.schedule_id = s.id
+                WHERE s.company_id = %s
+            """, (company_id,))
+            for row in cursor.fetchall():
+                b_id = row['badge_or_card_id']
+                if b_id not in emp_schedules_map:
+                    emp_schedules_map[b_id] = []
+                emp_schedules_map[b_id].append(f"{row['name']} ({str(row['start_time'])[:5]}-{str(row['end_time'])[:5]})")
 
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL AND company_id = %s", (company_id,))
             raw_devs = [row['device_id'] for row in cursor.fetchall()]
@@ -551,107 +521,117 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
             cursor.execute("SELECT * FROM devices_mapping WHERE company_id = %s", (company_id,))
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
             
-            all_keys = set(raw_devs).union(set(mappings.keys()))
-            
-            for dev in all_keys:
-                devices.append({
-                    "key": dev,
-                    "name": mappings.get(dev, dev)
-                })
+            for dev in set(raw_devs).union(set(mappings.keys())):
+                devices.append({"key": dev, "name": mappings.get(dev, dev)})
                 
         conn.close()
     except Exception as e:
-        print(f"Attention - Connexion BDD non établie : {e}")
+        print(f"Erreur dashboard : {e}")
 
     is_supervisor = (user_role == "supervisor")
     role_badge = '<span class="badge bg-warning text-dark px-3 py-2">Superviseur (Lecture seule)</span>' if is_supervisor else '<span class="badge bg-primary px-3 py-2">Admin Général</span>'
+    alert_html = f'<div class="alert alert-danger">{error}</div>' if error else (f'<div class="alert alert-success">{success}</div>' if success else '')
 
-    alert_html = ""
-    if error:
-        alert_html = f'<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-exclamation me-2"></i>{error}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
-    elif success:
-        alert_html = f'<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa-solid fa-circle-check me-2"></i>{success}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
-
-    # Si superviseur, on masque ou restreint les blocs de modification
-    import_section_html = "" if is_supervisor else """
-            <!-- SECTION IMPORTATION MASSIVE EXCEL/CSV -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-dark text-white py-3">
-                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-file-excel me-2 text-success"></i> Importation de la liste des Employés (Fichier Excel / CSV)</h5>
+    import_section = "" if is_supervisor else """
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white py-3">
+            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-file-excel me-2 text-success"></i> Importation de la liste des Employés (.xlsx / .csv)</h5>
+        </div>
+        <div class="card-body p-4">
+            <form action="/employees/import" method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <input type="file" class="form-control" name="file" accept=".xlsx, .xls, .csv" required>
                 </div>
-                <div class="card-body p-4">
-                    <form action="/employees/import" method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
-                        <div class="col-md-8">
-                            <label class="form-label text-secondary small fw-bold">Sélectionner un fichier (.xlsx, .xls, .csv)</label>
-                            <input type="file" class="form-control" name="file" accept=".xlsx, .xls, .csv" required>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-file-import me-2"></i> Importer les Employés</button>
-                        </div>
-                    </form>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-semibold"><i class="fa-solid fa-file-import me-2"></i> Importer</button>
                 </div>
-            </div>
+            </form>
+        </div>
+    </div>
     """
 
     schedules_mgmt_html = "" if is_supervisor else """
-            <!-- SECTION GESTION DES HORAIRES DE TRAVAIL -->
-            <div class="row g-4 mb-4">
-                <div class="col-lg-5">
-                    <div class="card h-100">
-                        <div class="card-header bg-success text-white py-3">
-                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-clock me-2"></i> Ajouter un Horaire / Shift de Travail</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <form action="/schedules/add" method="POST">
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Nom de l'horaire / Vacation</label>
-                                    <input type="text" class="form-control" name="name" placeholder="ex: Shift Matin" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label text-secondary small fw-bold">Heure d'arrivée</label>
-                                        <input type="time" class="form-control" name="start_time" value="08:00" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label text-secondary small fw-bold">Heure de départ</label>
-                                        <input type="time" class="form-control" name="end_time" value="17:00" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Tolérance de retard (minutes)</label>
-                                    <input type="number" class="form-control" name="late_tolerance_minutes" value="30" required>
-                                </div>
-                                <button type="submit" class="btn btn-success w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-plus me-2"></i> Ajouter l'horaire</button>
-                            </form>
-                        </div>
-                    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-clock me-2"></i> Ajouter un Horaire / Shift</h5>
                 </div>
-                <div class="col-lg-7">
-                    <div class="card h-100">
-                        <div class="card-header bg-dark text-white py-3">
-                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-business-time me-2"></i> Catalogue des Horaires Disponibles</h5>
+                <div class="card-body p-4">
+                    <form action="/schedules/add" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Nom</label>
+                            <input type="text" class="form-control" name="name" placeholder="ex: Shift Matin" required>
                         </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="ps-3">Nom</th>
-                                            <th>Entrée</th>
-                                            <th>Sortie</th>
-                                            <th>Tolérance</th>
-                                            <th class="text-end pe-3">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {sched_rows_html}
-                                    </tbody>
-                                </table>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-secondary small fw-bold">Entrée</label>
+                                <input type="time" class="form-control" name="start_time" value="08:00" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-secondary small fw-bold">Sortie</label>
+                                <input type="time" class="form-control" name="end_time" value="17:00" required>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold">Tolérance retard (min)</label>
+                            <input type="number" class="form-control" name="late_tolerance_minutes" value="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-business-time me-2"></i> Catalogue des Horaires</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead><tr><th class="ps-3">Nom</th><th>Entrée</th><th>Sortie</th><th>Tolérance</th><th class="text-end pe-3">Action</th></tr></thead>
+                            <tbody>{sched_rows_html}</tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    """
+
+    sched_rows_html = "".join([f"<tr><td class='ps-3 fw-semibold'>{s['name']}</td><td>{str(s['start_time'])[:5]}</td><td>{str(s['end_time'])[:5]}</td><td>{s['late_tolerance_minutes']}m</td><td class='text-end pe-3'><a href='/schedules/delete/{s['id']}' class='btn btn-sm btn-outline-danger' onclick='return confirm(\"Supprimer?\");'><i class='fa-solid fa-trash'></i></a></td></tr>" for s in schedules])
+    sched_checkboxes_html = "".join([f"<div class='form-check mb-1'><input class='form-check-input' type='checkbox' name='schedule_ids' value='{s['id']}' id='sc_{s['id']}'><label class='form-check-label small' for='sc_{s['id']}'><strong>{s['name']}</strong> ({str(s['start_time'])[:5]}-{str(s['end_time'])[:5]})</label></div>" for s in schedules])
+
+    dev_rows_html = ""
+    for d in devices:
+        rename_form = d['key'] if is_supervisor else f"<form action='/devices/rename' method='POST' class='d-flex gap-2'><input type='hidden' name='device_key' value='{d['key']}'><input type='text' class='form-control form-control-sm' name='friendly_name' value='{d['name']}' required><button type='submit' class='btn btn-sm btn-success text-nowrap'>Enregistrer</button></form>"
+        del_btn = "" if is_supervisor else f"<td class='text-end pe-3'><a href='/devices/delete/{d['key']}' class='btn btn-sm btn-outline-danger'><i class='fa-solid fa-trash'></i></a></td>"
+        dev_rows_html += f"<tr><td class='ps-3'><code>{d['key']}</code></td><td>{rename_form}</td>{del_btn}</tr>"
+
+    devices_mgmt_html = f"""
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white py-3">
+            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-network-wired me-2"></i> Gestion des Terminaux de Pointage</h5>
+        </div>
+        {"<!-- Masqué superviseur -->" if is_supervisor else '''
+        <div class="card-body bg-light border-bottom p-3">
+            <form action="/devices/add" method="POST" class="row g-2 align-items-center">
+                <div class="col-md-5"><input type="text" class="form-control form-control-sm" name="device_key" placeholder="ID Technique / N° de série" required></div>
+                <div class="col-md-5"><input type="text" class="form-control form-control-sm" name="friendly_name" placeholder="Nom personnalisé (ex: Porte Entrée)" required></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-sm btn-primary w-100 fw-semibold">Ajouter</button></div>
+            </form>
+        </div>
+        '''}
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th class="ps-3">ID Technique</th><th>Nom Personnalisé</th><th class="text-end pe-3">Action</th></tr></thead>
+                    <tbody>{dev_rows_html if dev_rows_html else '<tr><td colspan="3" class="text-center py-3 text-muted">Aucun terminal détecté.</td></tr>'}</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     """
 
     emp_rows_html = ""
@@ -689,10 +669,10 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
                     sched_badges = '<span class="badge bg-secondary bg-opacity-10 text-secondary">Horaires par défaut</span>'
 
                 actions_td = "" if is_supervisor else f"""
-                        <td class="pe-3 text-end">
-                            <a href="/employees/edit/{b_id}" class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen-to-square"></i></a>
-                            <a href="/employees/delete/{b_id}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet employé ?');"><i class="fa-solid fa-trash"></i></a>
-                        </td>
+                    <td class="pe-3 text-end">
+                        <a href="/employees/edit/{b_id}" class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="/employees/delete/{b_id}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet employé ?');"><i class="fa-solid fa-trash"></i></a>
+                    </td>
                 """
 
                 emp_rows_html += f"""
@@ -705,96 +685,23 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
                         {actions_td}
                     </tr>
                 """
-    else:
-        emp_rows_html = """
-                <tr id="no-emp-initial">
-                    <td colspan="6" class="text-center py-4 text-muted">Aucun employé trouvé.</td>
-                </tr>
-        """
 
-    sched_rows_html = ""
-    sched_checkboxes_html = ""
-    for s in schedules:
-        sched_checkboxes_html += f"""
-            <div class="form-check mb-1">
-                <input class="form-check-input" type="checkbox" name="schedule_ids" value="{s['id']}" id="sched_check_{s['id']}">
-                <label class="form-check-label small" for="sched_check_{s['id']}">
-                    <strong>{s['name']}</strong> ({str(s['start_time'])[:5]} - {str(s['end_time'])[:5]})
-                </label>
+    add_emp_card = "" if is_supervisor else f"""
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white py-3"><h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-user-plus me-2"></i> Nouvel Employé</h5></div>
+            <div class="card-body p-4">
+                <form action="/employees/add" method="POST">
+                    <div class="mb-3"><label class="form-label text-secondary small fw-bold">Matricule</label><input type="text" class="form-control" name="badge_or_card_id" required></div>
+                    <div class="mb-3"><label class="form-label text-secondary small fw-bold">Prénom</label><input type="text" class="form-control" name="first_name" required></div>
+                    <div class="mb-3"><label class="form-label text-secondary small fw-bold">Nom</label><input type="text" class="form-control" name="last_name" required></div>
+                    <div class="mb-3"><label class="form-label text-secondary small fw-bold">Département</label><input type="text" class="form-control" name="department"></div>
+                    <div class="mb-3"><label class="form-label text-secondary small fw-bold">Shifts</label><div class="schedule-box">{sched_checkboxes_html}</div></div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Enregistrer</button>
+                </form>
             </div>
-        """
-        sched_rows_html += f"""
-            <tr>
-                <td class="ps-3 fw-semibold">{s['name']}</td>
-                <td><span class="badge bg-primary bg-opacity-10 text-primary">{str(s['start_time'])[:5]}</span></td>
-                <td><span class="badge bg-secondary bg-opacity-10 text-secondary">{str(s['end_time'])[:5]}</span></td>
-                <td>{s['late_tolerance_minutes']} min</td>
-                <td class="text-end pe-3">
-                    <a href="/schedules/delete/{s['id']}" class="btn btn-sm btn-outline-danger" title="Supprimer cet horaire" onclick="return confirm('Voulez-vous supprimer cet horaire ?');"><i class="fa-solid fa-trash"></i></a>
-                </td>
-            </tr>
-        """
-
-    dev_rows_html = ""
-    if devices:
-        for d in devices:
-            rename_form = d['key'] if is_supervisor else f"""
-                        <form action="/devices/rename" method="POST" class="d-flex gap-2">
-                            <input type="hidden" name="device_key" value="{d['key']}">
-                            <input type="text" class="form-control form-control-sm" name="friendly_name" value="{d['name']}" required>
-                            <button type="submit" class="btn btn-sm btn-success text-nowrap"><i class="fa-solid fa-floppy-disk"></i> Enregistrer</button>
-                        </form>
-            """
-            del_btn = "" if is_supervisor else f"""
-                    <td class="text-end pe-3">
-                        <a href="/devices/delete/{d['key']}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Supprimer ce terminal ?');"><i class="fa-solid fa-trash"></i></a>
-                    </td>
-            """
-            dev_rows_html += f"""
-                <tr>
-                    <td class="ps-3"><code>{d['key']}</code></td>
-                    <td>{rename_form}</td>
-                    {del_btn}
-                </tr>
-            """
-    else:
-        dev_rows_html = '<tr><td colspan="3" class="text-center py-3 text-muted">Aucun terminal détecté.</td></tr>'
-
-    add_employee_card = "" if is_supervisor else f"""
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white py-3">
-                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-user-plus me-2"></i> Enregistrer un Nouvel Employé</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <form action="/employees/add" method="POST">
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Matricule / ID Badge</label>
-                                    <input type="text" class="form-control" name="badge_or_card_id" placeholder="ex: 02132" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Prénom</label>
-                                    <input type="text" class="form-control" name="first_name" placeholder="ex: Jonathan" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Nom</label>
-                                    <input type="text" class="form-control" name="last_name" placeholder="ex: Lukoki" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Département</label>
-                                    <input type="text" class="form-control" name="department" placeholder="ex: Informatique">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label text-secondary small fw-bold">Horaires & Shifts assignés</label>
-                                    <div class="schedule-box">
-                                        {sched_checkboxes_html if sched_checkboxes_html else '<span class="text-muted small">Aucun horaire créé.</span>'}
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"><i class="fa-solid fa-check me-2"></i> Enregistrer l'employé</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
     """
 
     html_content = f"""
@@ -802,92 +709,39 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
     <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tableau de bord - {current_company_name}</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
-            body {{ background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }}
-            .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }}
+            body {{ background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }} 
+            .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }} 
             .card {{ border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }}
-            .card-header {{ background-color: #ffffff; border-bottom: 1px solid #f1f5f9; border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; font-weight: 600; }}
-            .table th {{ font-weight: 600; color: #475569; background-color: #f8fafc !important; }}
-            .badge {{ padding: 0.5em 0.8em; font-weight: 500; border-radius: 6px; }}
             .schedule-box {{ max-height: 140px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 6px; padding: 8px; background-color: #fafafa; }}
         </style>
     </head>
     <body>
         <nav class="navbar navbar-dark shadow-sm py-3">
             <div class="container-fluid px-4">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-building me-2"></i> {current_company_name}</span>
-                    {role_badge}
-                </div>
+                <div class="d-flex align-items-center gap-3"><span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-building me-2"></i> {current_company_name}</span>{role_badge}</div>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="/" class="btn btn-outline-light btn-sm px-3 active"><i class="fa-solid fa-house me-1"></i> Tableau de bord</a>
-                    <a href="/reports" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-calendar-days me-1"></i> Rapport Journalier</a>
-                    <a href="/summary" class="btn btn-light btn-sm px-3 fw-semibold"><i class="fa-solid fa-chart-pie me-1"></i> Synthèse Employés</a>
+                    <a href="/" class="btn btn-outline-light btn-sm px-3 active"><i class="fa-solid fa-house me-1"></i> Accueil</a>
+                    <a href="/reports" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-calendar-days me-1"></i> Rapports</a>
+                    <a href="/summary" class="btn btn-light btn-sm px-3 fw-semibold"><i class="fa-solid fa-chart-pie me-1"></i> Synthèse</a>
                     <a href="/logout" class="btn btn-danger btn-sm px-3 ms-2"><i class="fa-solid fa-right-from-bracket me-1"></i> Déconnexion</a>
                 </div>
             </div>
         </nav>
-
         <div class="container-fluid px-4 my-4">
             {alert_html}
-
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="card border-start border-primary border-4">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted fw-semibold mb-1">Employés Enregistrés</h6>
-                                <h3 class="fw-bold text-dark mb-0">{len(employees)}</h3>
-                            </div>
-                            <div class="text-primary bg-primary bg-opacity-10 p-3 rounded-circle">
-                                <i class="fa-solid fa-users fa-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-start border-success border-4">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted fw-semibold mb-1">Statut du Système</h6>
-                                <h3 class="fw-bold text-success mb-0">En ligne 🟢</h3>
-                            </div>
-                            <div class="text-success bg-success bg-opacity-10 p-3 rounded-circle">
-                                <i class="fa-solid fa-server fa-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card border-start border-info border-4">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted fw-semibold mb-1">Terminaux Connectés</h6>
-                                <h3 class="fw-bold text-info mb-0">{len(devices)} détecté(s)</h3>
-                            </div>
-                            <div class="text-info bg-info bg-opacity-10 p-3 rounded-circle">
-                                <i class="fa-solid fa-network-wired fa-xl"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {import_section_html}
+            {import_section}
             {schedules_mgmt_html.replace("{sched_rows_html}", sched_rows_html)}
-
-            <!-- SECTION EMPLOYÉS -->
+            {devices_mgmt_html}
             <div class="row g-4">
-                {add_employee_card}
+                {add_emp_card}
                 <div class="{'col-lg-8' if not is_supervisor else 'col-lg-12'}">
-                    <div class="card mt-0">
-                        <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                            <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fa-solid fa-users-gear me-2 text-primary"></i> Liste des Employés par Département</h5>
-                            <a href="/summary" class="btn btn-sm btn-outline-primary fw-semibold"><i class="fa-solid fa-chart-pie me-1"></i> Voir la synthèse globale</a>
+                    <div class="card">
+                        <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fs-6 fw-bold"><i class="fa-solid fa-users me-2"></i> Liste des Employés ({len(employees)})</h5>
                         </div>
                         <div class="card-body bg-light border-bottom py-2 px-3">
                             <div class="row g-2 align-items-center">
@@ -895,13 +749,11 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
                                         <input type="text" id="empSearchInput" class="form-control" placeholder="Filtrer par nom, prénom ou matricule...">
-                                        <button class="btn btn-outline-secondary" type="button" id="clearEmpSearch" title="Effacer"><i class="fa-solid fa-xmark"></i></button>
+                                        <button class="btn btn-outline-secondary" type="button" id="clearEmpSearch"><i class="fa-solid fa-xmark"></i></button>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <select id="empDeptFilter" class="form-select form-select-sm">
-                                        {dept_options_html}
-                                    </select>
+                                    <select id="empDeptFilter" class="form-select form-select-sm">{dept_options_html}</select>
                                 </div>
                                 <div class="col-md-2 text-end">
                                     <span id="empFilterCounter" class="badge bg-primary bg-opacity-10 text-primary w-100 py-2">{len(employees)} au total</span>
@@ -913,19 +765,17 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
                                 <table class="table table-hover align-middle mb-0" id="employeesTable">
                                     <thead>
                                         <tr>
-                                            <th class="ps-3">Matricule / Badge</th>
+                                            <th class="ps-3">Matricule</th>
                                             <th>Nom & Prénom</th>
                                             <th>Département</th>
-                                            <th>Horaires assignés</th>
+                                            <th>Horaires</th>
                                             <th>Statut</th>
-                                            {"" if is_supervisor else '<th class="pe-3 text-end">Actions</th>'}
+                                            {"" if is_supervisor else '<th class="text-end pe-3">Actions</th>'}
                                         </tr>
                                     </thead>
                                     <tbody id="employeesTableBody">
-                                        {emp_rows_html}
-                                        <tr id="noEmpSearchResult" style="display: none;">
-                                            <td colspan="6" class="text-center py-4 text-muted">Aucun employé ne correspond à votre recherche.</td>
-                                        </tr>
+                                        {emp_rows_html if emp_rows_html else '<tr><td colspan="6" class="text-center py-4 text-muted">Aucun employé.</td></tr>'}
+                                        <tr id="noEmpSearchResult" style="display: none;"><td colspan="6" class="text-center py-4 text-muted">Aucun employé ne correspond.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -934,95 +784,117 @@ async def dashboard(request: Request, error: str = None, success: str = None, sa
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {{
+                const searchInput = document.getElementById("empSearchInput");
+                const clearSearchBtn = document.getElementById("clearEmpSearch");
+                const deptFilter = document.getElementById("empDeptFilter");
+                const allEmpRows = Array.from(document.querySelectorAll(".emp-data-row"));
+                const allDeptHeaders = Array.from(document.querySelectorAll(".dept-group-header"));
+                const noResultRow = document.getElementById("noEmpSearchResult");
+                const filterCounter = document.getElementById("empFilterCounter");
+
+                function filterTable() {{
+                    const query = (searchInput ? searchInput.value : "").trim().toLowerCase();
+                    const selectedDept = deptFilter ? deptFilter.value : "ALL";
+                    let matchCount = 0;
+                    const visibleDepts = new Set();
+
+                    allEmpRows.forEach(row => {{
+                        const rowDept = row.getAttribute("data-dept");
+                        const rowSearch = row.getAttribute("data-search") || "";
+                        const matchDept = (selectedDept === "ALL" || rowDept === selectedDept);
+                        const matchQuery = (!query || rowSearch.includes(query));
+                        if (matchDept && matchQuery) {{
+                            row.style.display = "";
+                            matchCount++;
+                            visibleDepts.add(rowDept);
+                        }} else {{
+                            row.style.display = "none";
+                        }}
+                    }});
+
+                    allDeptHeaders.forEach(header => {{
+                        const hDept = header.getAttribute("data-dept");
+                        header.style.display = visibleDepts.has(hDept) ? "" : "none";
+                    }});
+
+                    if (noResultRow) noResultRow.style.display = (allEmpRows.length > 0 && matchCount === 0) ? "" : "none";
+                    if (filterCounter) filterCounter.textContent = matchCount + " employé(s)";
+                }}
+
+                if (searchInput) searchInput.addEventListener("input", filterTable);
+                if (clearSearchBtn) clearSearchBtn.addEventListener("click", () => {{ searchInput.value = ""; filterTable(); }});
+                if (deptFilter) deptFilter.addEventListener("change", filterTable);
+            }});
+        </script>
     </body>
     </html>
     """
     return HTMLResponse(content=html_content)
 
 
-# --- ROUTE IMPORTATION D'EMPLOYÉS (EXCEL / CSV) ---
-@app.post("/employees/import")
-async def import_employees(file: UploadFile = File(...), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
-    if saas_session != "company_user" or user_role == "supervisor":
-        return RedirectResponse(url="/?error=Accès+refusé:+Superviseur+en+lecture+seule", status_code=303)
-
-    try:
-        contents = await file.read()
-        filename = file.filename.lower()
-
-        if filename.endswith('.csv'):
-            df = pd.read_csv(io.BytesIO(contents))
-        elif filename.endswith('.xlsx') or filename.endswith('.xls'):
-            df = pd.read_excel(io.BytesIO(contents))
-        else:
-            return RedirectResponse(url="/?error=Format+de+fichier+non+supporté", status_code=303)
-
-        df.columns = [str(col).strip().lower() for col in df.columns]
-
-        col_badge = next((c for c in df.columns if c in ['badge', 'badge_id', 'matricule', 'id', 'cardno', 'card_no', 'employee_id']), None)
-        col_prenom = next((c for c in df.columns if c in ['prenom', 'prénom', 'first_name', 'firstname', 'prenoms']), None)
-        col_nom = next((c for c in df.columns if c in ['nom', 'last_name', 'lastname', 'name']), None)
-        col_dept = next((c for c in df.columns if c in ['departement', 'département', 'department', 'service', 'dept']), None)
-
-        if not col_badge or not col_nom:
-            return RedirectResponse(url="/?error=Colonnes+matricule+et+nom+requises", status_code=303)
-
-        imported_count = 0
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            for _, row in df.iterrows():
-                badge_val = str(row[col_badge]).strip() if pd.notna(row[col_badge]) else ""
-                if not badge_val or badge_val.lower() == 'nan':
-                    continue
-
-                prenom_val = str(row[col_prenom]).strip() if col_prenom and pd.notna(row[col_prenom]) else ""
-                nom_val = str(row[col_nom]).strip() if col_nom and pd.notna(row[col_nom]) else ""
-                dept_val = str(row[col_dept]).strip() if col_dept and pd.notna(row[col_dept]) else None
-
-                cursor.execute(
-                    """
-                    INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active)
-                    VALUES (%s, %s, %s, %s, %s, TRUE)
-                    ON CONFLICT (badge_or_card_id) DO UPDATE 
-                    SET first_name = EXCLUDED.first_name, 
-                        last_name = EXCLUDED.last_name, 
-                        department = EXCLUDED.department,
-                        company_id = EXCLUDED.company_id
-                    """,
-                    (badge_val, prenom_val, nom_val, dept_val, company_id)
-                )
-                imported_count += 1
-            conn.commit()
-        conn.close()
-
-        return RedirectResponse(url=f"/?success={imported_count}+employé(s)+importé(s)+avec+succès", status_code=303)
-    except Exception as e:
-        return RedirectResponse(url=f"/?error=Erreur+de+lecture:+{str(e)}", status_code=303)
-
-
-# --- GESTION HORAIRES & EMPLOYÉS ---
-@app.post("/schedules/add")
-async def add_schedule(name: str = Form(...), start_time: str = Form(...), end_time: str = Form(...), late_tolerance_minutes: int = Form(30), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
+# --- ROUTES GESTION TERMINAUX ET HORAIRES ---
+@app.post("/devices/add")
+async def add_device_manual(device_key: str = Form(...), friendly_name: str = Form(...), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
     if saas_session != "company_user" or user_role == "supervisor":
         return RedirectResponse(url="/?error=Accès+refusé", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO work_schedules (company_id, name, start_time, end_time, late_tolerance_minutes)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (company_id, name.strip(), start_time, end_time, late_tolerance_minutes))
+            cursor.execute("INSERT INTO devices_mapping (device_key, friendly_name, company_id) VALUES (%s, %s, %s) ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name, company_id = EXCLUDED.company_id", (device_key.strip(), friendly_name.strip(), company_id))
+            conn.commit()
+        conn.close()
+        return RedirectResponse(url="/?success=Terminal+ajouté", status_code=303)
+    except Exception as e:
+        return RedirectResponse(url=f"/?error=Erreur:+{str(e)}", status_code=303)
+
+@app.post("/devices/rename")
+async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
+    if saas_session != "company_user" or user_role == "supervisor":
+        return RedirectResponse(url="/", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO devices_mapping (device_key, friendly_name, company_id) VALUES (%s, %s, %s) ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name, company_id = EXCLUDED.company_id", (device_key.strip(), friendly_name.strip(), company_id))
             conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Erreur ajout horaire : {e}")
+        print(f"Erreur : {e}")
+    return RedirectResponse(url="/", status_code=303)
+
+@app.get("/devices/delete/{device_key}")
+async def delete_device(device_key: str, saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
+    if saas_session != "company_user" or user_role == "supervisor":
+        return RedirectResponse(url="/", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM devices_mapping WHERE device_key = %s AND company_id = %s", (device_key, company_id))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur : {e}")
+    return RedirectResponse(url="/", status_code=303)
+
+@app.post("/schedules/add")
+async def add_schedule(name: str = Form(...), start_time: str = Form(...), end_time: str = Form(...), late_tolerance_minutes: int = Form(30), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
+    if saas_session != "company_user" or user_role == "supervisor":
+        return RedirectResponse(url="/", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO work_schedules (company_id, name, start_time, end_time, late_tolerance_minutes) VALUES (%s, %s, %s, %s, %s)", (company_id, name.strip(), start_time, end_time, late_tolerance_minutes))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Erreur : {e}")
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/schedules/delete/{sched_id}")
 async def delete_schedule(sched_id: int, saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
     if saas_session != "company_user" or user_role == "supervisor":
-        return RedirectResponse(url="/?error=Accès+refusé", status_code=303)
+        return RedirectResponse(url="/", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -1031,42 +903,33 @@ async def delete_schedule(sched_id: int, saas_session: str = Cookie(None), compa
             conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Erreur suppression horaire : {e}")
+        print(f"Erreur : {e}")
     return RedirectResponse(url="/", status_code=303)
 
+
+# --- GESTION DES EMPLOYÉS & IMPORT ---
 @app.post("/employees/add")
 async def add_employee(request: Request, badge_or_card_id: str = Form(...), first_name: str = Form(...), last_name: str = Form(...), department: str = Form(None), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
     if saas_session != "company_user" or user_role == "supervisor":
-        return RedirectResponse(url="/?error=Accès+refusé", status_code=303)
-
+        return RedirectResponse(url="/", status_code=303)
     form_data = await request.form()
     schedule_ids = form_data.getlist("schedule_ids")
-
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                """,
-                (badge_or_card_id.strip(), first_name.strip(), last_name.strip(), department.strip() if department else None, company_id, True)
-            )
+            cursor.execute("INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active) VALUES (%s, %s, %s, %s, %s, TRUE)", (badge_or_card_id.strip(), first_name.strip(), last_name.strip(), department.strip() if department else None, company_id))
             for s_id in schedule_ids:
-                cursor.execute(
-                    "INSERT INTO employee_schedules (badge_or_card_id, schedule_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
-                    (badge_or_card_id.strip(), int(s_id))
-                )
+                cursor.execute("INSERT INTO employee_schedules (badge_or_card_id, schedule_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (badge_or_card_id.strip(), int(s_id)))
             conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Erreur ajout employé : {e}")
+        print(f"Erreur : {e}")
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/employees/delete/{badge_id}")
 async def delete_employee(badge_id: str, saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
     if saas_session != "company_user" or user_role == "supervisor":
-        return RedirectResponse(url="/?error=Accès+refusé", status_code=303)
+        return RedirectResponse(url="/", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -1075,11 +938,52 @@ async def delete_employee(badge_id: str, saas_session: str = Cookie(None), compa
             conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Erreur suppression employé : {e}")
+        print(f"Erreur : {e}")
     return RedirectResponse(url="/", status_code=303)
 
+@app.post("/employees/import")
+async def import_employees(file: UploadFile = File(...), saas_session: str = Cookie(None), company_id: str = Cookie("1"), user_role: str = Cookie("admin")):
+    if saas_session != "company_user" or user_role == "supervisor":
+        return RedirectResponse(url="/", status_code=303)
+    try:
+        contents = await file.read()
+        filename = file.filename.lower()
+        if filename.endswith('.csv'):
+            df = pd.read_csv(io.BytesIO(contents))
+        elif filename.endswith(('.xlsx', '.xls')):
+            df = pd.read_excel(io.BytesIO(contents))
+        else:
+            return RedirectResponse(url="/?error=Format+non+supporté", status_code=303)
 
-# --- RAPPORTS & SYNTHÈSE (ACCESSIBLES ADMIN ET SUPERVISEUR) ---
+        df.columns = [str(col).strip().lower() for col in df.columns]
+        col_badge = next((c for c in df.columns if c in ['badge', 'matricule', 'id', 'cardno']), None)
+        col_prenom = next((c for c in df.columns if c in ['prenom', 'first_name']), None)
+        col_nom = next((c for c in df.columns if c in ['nom', 'last_name']), None)
+        col_dept = next((c for c in df.columns if c in ['departement', 'department']), None)
+
+        if not col_badge or not col_nom:
+            return RedirectResponse(url="/?error=Colonnes+manquantes+dans+le+fichier", status_code=303)
+
+        imported = 0
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            for _, row in df.iterrows():
+                b_val = str(row[col_badge]).strip() if pd.notna(row[col_badge]) else ""
+                if not b_val or b_val.lower() == 'nan': continue
+                cursor.execute("""
+                    INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active)
+                    VALUES (%s, %s, %s, %s, %s, TRUE)
+                    ON CONFLICT (badge_or_card_id) DO UPDATE SET first_name=EXCLUDED.first_name, last_name=EXCLUDED.last_name, department=EXCLUDED.department, company_id=EXCLUDED.company_id
+                """, (b_val, str(row[col_prenom]).strip() if col_prenom and pd.notna(row[col_prenom]) else "", str(row[col_nom]).strip(), str(row[col_dept]).strip() if col_dept and pd.notna(row[col_dept]) else None, company_id))
+                imported += 1
+            conn.commit()
+        conn.close()
+        return RedirectResponse(url=f"/?success={imported}+employés+importés", status_code=303)
+    except Exception as e:
+        return RedirectResponse(url=f"/?error=Erreur+import:+{str(e)}", status_code=303)
+
+
+# --- RAPPORTS ET SYNTHÈSE DÉTAILLÉS ---
 @app.get("/reports", response_class=HTMLResponse)
 async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, saas_session: str = Cookie(None), company_id: str = Cookie("1")):
     if saas_session != "company_user":
@@ -1100,21 +1004,16 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL AND company_id = %s", (company_id,))
             devices = [{"key": row['device_id'], "name": mappings.get(row['device_id'], row['device_id'])} for row in cursor.fetchall()]
 
-            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s", (company_id,))
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
-            cursor.execute("""
-                SELECT es.badge_or_card_id, s.* FROM employee_schedules es
-                JOIN work_schedules s ON es.schedule_id = s.id WHERE s.company_id = %s
-            """, (company_id,))
-            emp_schedules_map = {row['badge_or_card_id']: [] for row in cursor.fetchall()}
+            cursor.execute("SELECT es.badge_or_card_id, s.* FROM employee_schedules es JOIN work_schedules s ON es.schedule_id = s.id WHERE s.company_id = %s", (company_id,))
+            emp_schedules_map = {}
             for row in cursor.fetchall():
-                emp_schedules_map[row['badge_or_card_id']].append(row)
+                emp_schedules_map.setdefault(row['badge_or_card_id'], []).append(row)
 
             base_query = """
-                SELECT l.id, l.badge_or_card_id, COALESCE(e.first_name, 'Inconnu') as first_name,
-                       COALESCE(e.last_name, '') as last_name, DATE(l.punch_timestamp) as punch_date,
-                       l.punch_timestamp as exact_punch, l.device_id
+                SELECT l.id, l.badge_or_card_id, COALESCE(e.first_name, 'Inconnu') as first_name, COALESCE(e.last_name, '') as last_name, DATE(l.punch_timestamp) as punch_date, l.punch_timestamp as exact_punch, l.device_id
                 FROM attendance_raw_logs l
                 LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id
                 WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s
@@ -1123,74 +1022,231 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
             if device_id and device_id != "ALL":
                 base_query += " AND l.device_id = %s"
                 params.append(device_id)
-
             base_query += " ORDER BY l.punch_timestamp DESC"
             cursor.execute(base_query, tuple(params))
             raw_logs = cursor.fetchall()
-
-            grouped = {}
-            for r in raw_logs:
-                key = (r['badge_or_card_id'], str(r['punch_date']), r['device_id'])
-                if key not in grouped:
-                    grouped[key] = {
-                        "badge": r['badge_or_card_id'], "first_name": r['first_name'],
-                        "last_name": r['last_name'], "date": r['punch_date'],
-                        "device_id": r['device_id'], "timestamps": []
-                    }
-                grouped[key]["timestamps"].append((r['id'], r['exact_punch']))
-
-            for key, data in grouped.items():
-                sorted_ts = sorted(data["timestamps"], key=lambda x: x[1])
-                cin_item = sorted_ts[0]
-                cout_item = sorted_ts[-1] if len(sorted_ts) > 1 else None
-                best_sched = get_best_matching_schedule(cin_item[1], emp_schedules_map.get(data["badge"], []), all_schedules)
-
-                reports.append({
-                    "badge": data["badge"], "name": f"{data['first_name']} {data['last_name']}",
-                    "schedule": best_sched['name'], "date": data["date"],
-                    "cin": str(cin_item[1]).split(' ')[1], "cout": str(cout_item[1]).split(' ')[1] if cout_item else '-'
-                })
         conn.close()
+
+        grouped = {}
+        for r in raw_logs:
+            key = (r['badge_or_card_id'], str(r['punch_date']), r['device_id'])
+            if key not in grouped:
+                grouped[key] = {"badge_or_card_id": r['badge_or_card_id'], "first_name": r['first_name'], "last_name": r['last_name'], "punch_date": r['punch_date'], "device_id": r['device_id'], "timestamps": []}
+            grouped[key]["timestamps"].append((r['id'], r['exact_punch']))
+
+        for key, data in grouped.items():
+            sorted_ts = sorted(data["timestamps"], key=lambda x: x[1])
+            cin_item, cout_item = sorted_ts[0], (sorted_ts[-1] if len(sorted_ts) > 1 else None)
+            assigned_for_emp = emp_schedules_map.get(data["badge_or_card_id"], [])
+            best_sched = get_best_matching_schedule(cin_item[1], assigned_for_emp, all_schedules)
+
+            reports.append({
+                "badge_or_card_id": data["badge_or_card_id"], "first_name": data["first_name"], "last_name": data["last_name"],
+                "schedule_name": best_sched.get('name', 'Standard'), "schedule_start": best_sched['start_time'], "schedule_end": best_sched['end_time'], "late_tolerance_minutes": best_sched.get('late_tolerance_minutes', 30),
+                "punch_date": data["punch_date"], "check_in_id": cin_item[0], "check_in": cin_item[1], "check_out_id": cout_item[0] if cout_item else None, "check_out": cout_item[1] if cout_item else None, "device_id": data["device_id"]
+            })
     except Exception as e:
-        print(f"Erreur rapport : {e}")
+        print(f"Erreur rapports : {e}")
 
-    report_rows_html = "".join([f"<tr><td>{r['date']}</td><td><code>{r['badge']}</code></td><td class='text-start ps-3'>{r['name']}</td><td>{r['schedule']}</td><td>{r['cin']}</td><td>{r['cout']}</td></tr>" for r in reports]) or '<tr><td colspan="6" class="text-center py-4 text-muted">Aucun pointage trouvé.</td></tr>'
+    report_rows_html = ""
+    for row in reports:
+        emp_name = f"{row['first_name']} {row['last_name']}".strip()
+        cin, cout = row['check_in'], row['check_out']
+        cin_str, cout_str = (str(cin).split(' ')[1] if cin else '-'), (str(cout).split(' ')[1] if cout else '-')
+        dev_display = mappings.get(row['device_id'], row['device_id']) if row['device_id'] in mappings else row['device_id']
+        del_id = row['check_out_id'] if row['check_out_id'] else row['check_in_id']
 
-    return HTMLResponse(f"""
+        if not cin or not cout or cin == cout:
+            report_rows_html += f"<tr><td><strong>{row['punch_date']}</strong></td><td><code>{row['badge_or_card_id']}</code></td><td class='text-start ps-4 fw-semibold'>{emp_name}</td><td>{row['schedule_name']}</td><td><span class='badge bg-danger'>Incomplet ({cin_str})</span></td><td>-</td><td>-</td><td>{dev_display}</td><td><span class='badge bg-danger'>Absent</span></td><td><a href='/reports/delete/{del_id}' class='btn btn-sm btn-outline-danger'><i class='fa-solid fa-trash'></i></a></td></tr>"
+        else:
+            duration = cout - cin
+            hrs, mins = int(duration.total_seconds()) // 3600, (int(duration.total_seconds()) % 3600) // 60
+            max_arr = datetime.combine(date.today(), row['schedule_start']) + timedelta(minutes=row['late_tolerance_minutes'])
+            is_arr_valid = cin.time() <= max_arr.time()
+            is_dep_valid = cout.time() >= row['schedule_end']
+            status = '<span class="badge bg-success">Conforme</span>' if (is_arr_valid and is_dep_valid) else '<span class="badge bg-warning text-dark">Non conforme</span>'
+            report_rows_html += f"<tr><td><strong>{row['punch_date']}</strong></td><td><code>{row['badge_or_card_id']}</code></td><td class='text-start ps-4 fw-semibold'>{emp_name}</td><td>{row['schedule_name']}</td><td>{cin_str}</td><td>{cout_str}</td><td><strong>{hrs}h {mins:02d}m</strong></td><td>{dev_display}</td><td>{status}</td><td><a href='/reports/delete/{del_id}' class='btn btn-sm btn-outline-danger'><i class='fa-solid fa-trash'></i></a></td></tr>"
+
+    device_options = '<option value="ALL">Tous les terminaux</option>' + "".join([f'<option value="{d["key"]}" {"selected" if device_id == d["key"] else ""}>{d["name"]}</option>' for d in devices])
+    export_excel_url = f"/reports/export/excel?start_date={start_date}&end_date={end_date}" + (f"&device_id={device_id}" if device_id else "")
+
+    html_content = f"""
     <!DOCTYPE html>
     <html lang="fr">
     <head>
-        <meta charset="UTF-8">
-        <title>Rapport - SaaS</title>
+        <meta charset="UTF-8"><title>Rapport Journalier</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>body {{ background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }} .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }} .card {{ border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }}</style>
     </head>
-    <body class="bg-light">
-        <nav class="navbar navbar-dark bg-dark py-3">
-            <div class="container-fluid px-4">
-                <span class="navbar-brand fw-bold">Rapport Journalier</span>
-                <a href="/" class="btn btn-outline-light btn-sm">Tableau de bord</a>
+    <body>
+        <nav class="navbar navbar-dark shadow-sm py-3">
+            <div class="container-fluid px-4"><span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-calendar-days me-2"></i> Rapports Détaillés</span>
+                <div class="d-flex gap-2"><a href="/" class="btn btn-outline-light btn-sm px-3">Accueil</a><a href="/logout" class="btn btn-danger btn-sm px-3">Déconnexion</a></div>
             </div>
         </nav>
-        <div class="container my-4">
-            <div class="card shadow-sm p-4">
-                <table class="table table-hover align-middle text-center">
-                    <thead><tr><th>Date</th><th>Matricule</th><th class="text-start ps-3">Employé</th><th>Shift</th><th>Arrivée</th><th>Départ</th></tr></thead>
-                    <tbody>{report_rows_html}</tbody>
-                </table>
+        <div class="container-fluid px-4 my-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <form method="GET" action="/reports" class="row g-3">
+                        <div class="col-md-4"><label class="form-label small fw-bold">Date début</label><input type="date" class="form-control" name="start_date" value="{start_date}" required></div>
+                        <div class="col-md-4"><label class="form-label small fw-bold">Date fin</label><input type="date" class="form-control" name="end_date" value="{end_date}" required></div>
+                        <div class="col-md-2"><label class="form-label small fw-bold">Terminal</label><select class="form-select" name="device_id">{device_options}</select></div>
+                        <div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100 fw-semibold">Filtrer</button></div>
+                    </form>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fs-6 fw-bold">Pointages ({len(reports)})</h5>
+                    <div class="d-flex gap-2"><a href="{export_excel_url}" class="btn btn-success btn-sm"><i class="fa-solid fa-file-excel me-1"></i> Excel</a><button onclick="window.print();" class="btn btn-outline-dark btn-sm">Imprimer</button></div>
+                </div>
+                <div class="card-body p-0"><div class="table-responsive"><table class="table table-striped table-hover mb-0 align-middle text-center">
+                    <thead><tr><th>Date</th><th>Matricule</th><th class="text-start ps-4">Employé</th><th>Shift</th><th>Arrivée</th><th>Départ</th><th>Heures</th><th>Terminal</th><th>Statut</th><th>Action</th></tr></thead>
+                    <tbody>{report_rows_html if report_rows_html else '<tr><td colspan="10" class="text-center py-4 text-muted">Aucun pointage.</td></tr>'}</tbody>
+                </table></div></div>
             </div>
         </div>
     </body>
     </html>
-    """)
+    """
+    return HTMLResponse(content=html_content)
 
+@app.get("/reports/delete/{log_id}")
+async def delete_attendance_log(log_id: int, saas_session: str = Cookie(None), company_id: str = Cookie("1")):
+    if saas_session != "company_user": return RedirectResponse(url="/login", status_code=303)
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE id = %s AND company_id = %s", (log_id, company_id))
+            conn.commit()
+        conn.close()
+    except Exception as e: print(e)
+    return RedirectResponse(url="/reports", status_code=303)
+
+@app.get("/reports/export/excel")
+async def export_reports_excel(start_date: str = None, end_date: str = None, device_id: str = None, saas_session: str = Cookie(None), company_id: str = Cookie("1")):
+    if saas_session != "company_user": return RedirectResponse(url="/login", status_code=303)
+    today_str = date.today().isoformat()
+    start_date, end_date = start_date or today_str, end_date or today_str
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM devices_mapping WHERE company_id = %s", (company_id,))
+            mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s", (company_id,))
+            all_scheds = cursor.fetchall()
+            cursor.execute("SELECT es.badge_or_card_id, s.* FROM employee_schedules es JOIN work_schedules s ON es.schedule_id = s.id WHERE s.company_id = %s", (company_id,))
+            emp_sched_map = {}
+            for row in cursor.fetchall(): emp_sched_map.setdefault(row['badge_or_card_id'], []).append(row)
+
+            query = "SELECT l.badge_or_card_id, COALESCE(e.first_name, 'Inconnu') as first_name, COALESCE(e.last_name, '') as last_name, DATE(l.punch_timestamp) as p_date, l.punch_timestamp as exact_punch, l.device_id FROM attendance_raw_logs l LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s"
+            params = [company_id, start_date, end_date]
+            if device_id and device_id != "ALL":
+                query += " AND l.device_id = %s"
+                params.append(device_id)
+            cursor.execute(query, tuple(params))
+            raw_logs = cursor.fetchall()
+        conn.close()
+
+        grouped = {}
+        for r in raw_logs:
+            grouped.setdefault((r['badge_or_card_id'], str(r['p_date']), r['device_id']), []).append(r['exact_punch'])
+
+        export_data = []
+        for (badge, p_date, dev), ts_list in grouped.items():
+            sorted_ts = sorted(ts_list)
+            cin, cout = sorted_ts[0], (sorted_ts[-1] if len(sorted_ts) > 1 else None)
+            duration = (cout - cin) if (cin and cout and cin != cout) else timedelta(0)
+            hrs, mins = int(duration.total_seconds()) // 3600, (int(duration.total_seconds()) % 3600) // 60
+            export_data.append({"Date": p_date, "Matricule": badge, "Arrivée": str(cin).split(' ')[1] if cin else '-', "Départ": str(cout).split(' ')[1] if cout else '-', "Heures": f"{hrs}h {mins:02d}m", "Terminal": mappings.get(dev, dev)})
+
+        df = pd.DataFrame(export_data)
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer: df.to_excel(writer, index=False, sheet_name='Rapport')
+        output.seek(0)
+        return StreamingResponse(output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": f"attachment; filename=Rapport_{start_date}.xlsx"})
+    except Exception as e:
+        print(e)
+        return RedirectResponse(url="/reports", status_code=303)
+
+
+# --- SYNTHÈSE GLOBALE ---
 @app.get("/summary", response_class=HTMLResponse)
-async def attendance_summary(request: Request, saas_session: str = Cookie(None), company_id: str = Cookie("1")):
-    if saas_session != "company_user":
-        return RedirectResponse(url="/login", status_code=303)
-    return HTMLResponse('<!DOCTYPE html><html><head><title>Synthèse</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></head><body class="bg-light"><div class="container my-4"><a href="/" class="btn btn-secondary mb-3">← Retour</a><div class="card p-4"><h4>Synthèse des Présences</h4><p class="text-muted">Module de synthèse global actif.</p></div></div></body></html>')
+async def attendance_summary(request: Request, start_date: str = None, end_date: str = None, saas_session: str = Cookie(None), company_id: str = Cookie("1")):
+    if saas_session != "company_user": return RedirectResponse(url="/login", status_code=303)
+    today_str = date.today().isoformat()
+    start_date, end_date = start_date or today_str, end_date or today_str
+    summary_rows = []
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s", (company_id,))
+            all_scheds = cursor.fetchall()
+            cursor.execute("SELECT es.badge_or_card_id, s.* FROM employee_schedules es JOIN work_schedules s ON es.schedule_id = s.id WHERE s.company_id = %s", (company_id,))
+            emp_sched_map = {}
+            for row in cursor.fetchall(): emp_sched_map.setdefault(row['badge_or_card_id'], []).append(row)
+
+            cursor.execute("SELECT COALESCE(e.first_name, 'Inconnu') as fn, COALESCE(e.last_name, '') as ln, l.badge_or_card_id, DATE(l.punch_timestamp) as pd, MIN(l.punch_timestamp) as cin, MAX(l.punch_timestamp) as cout FROM attendance_raw_logs l LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name", (company_id, start_date, end_date))
+            raw_logs = cursor.fetchall()
+        conn.close()
+
+        emp_stats = {}
+        for r in raw_logs:
+            badge = r['badge_or_card_id']
+            stat = emp_stats.setdefault(badge, {"name": f"{r['fn']} {r['ln']}".strip(), "present": 0, "absent": 0, "late": 0, "secs": 0})
+            cin, cout = r['cin'], r['cout']
+            if not cin or not cout or cin == cout:
+                stat["absent"] += 1
+            else:
+                best_sched = get_best_matching_schedule(cin, emp_sched_map.get(badge, []), all_scheds)
+                max_arr = datetime.combine(r['pd'], best_sched['start_time']) + timedelta(minutes=best_sched.get('late_tolerance_minutes', 30))
+                if cin <= max_arr: stat["present"] += 1
+                else: 
+                    stat["late"] += 1
+                    stat["present"] += 1
+                stat["secs"] += int((cout - cin).total_seconds())
+
+        for badge, data in emp_stats.items():
+            hrs, mins = data["secs"] // 3600, (data["secs"] % 3600) // 60
+            summary_rows.append({"employee": data["name"], "present": data["present"], "absent": data["absent"], "late": data["late"], "hours": f"{hrs}h {mins:02d}m"})
+    except Exception as e: print(e)
+
+    summary_table_rows = "".join([f"<tr><td class='text-start ps-4 fw-semibold'>{r['employee']}</td><td><span class='badge bg-success'>{r['present']}</span></td><td><span class='badge bg-danger'>{r['absent']}</span></td><td><span class='badge bg-warning text-dark'>{r['late']}</span></td><td class='fw-bold text-primary'>{r['hours']}</td></tr>" for r in summary_rows]) if summary_rows else '<tr><td colspan="5" class="text-center py-4 text-muted">Aucune donnée.</td></tr>'
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head><meta charset="UTF-8"><title>Synthèse Globale</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>body {{ background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }} .navbar {{ background: linear-gradient(135deg, #1e293b, #0f172a) !important; }} .card {{ border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }}</style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark shadow-sm py-3"><div class="container-fluid px-4"><span class="navbar-brand mb-0 h5 fw-bold"><i class="fa-solid fa-chart-pie me-2"></i> Synthèse Globale</span><div class="d-flex gap-2"><a href="/" class="btn btn-outline-light btn-sm px-3">Accueil</a><a href="/logout" class="btn btn-danger btn-sm px-3">Déconnexion</a></div></div></nav>
+        <div class="container-fluid px-4 my-4">
+            <div class="card shadow-sm mb-4"><div class="card-body p-4">
+                <form method="GET" action="/summary" class="row g-3">
+                    <div class="col-md-5"><label class="form-label small fw-bold">Date début</label><input type="date" class="form-control" name="start_date" value="{start_date}" required></div>
+                    <div class="col-md-5"><label class="form-label small fw-bold">Date fin</label><input type="date" class="form-control" name="end_date" value="{end_date}" required></div>
+                    <div class="col-md-2 d-flex align-items-end"><button type="submit" class="btn btn-success w-100 fw-semibold">Filtrer</button></div>
+                </form>
+            </div></div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3"><h5 class="mb-0 fs-6 fw-bold">Récapitulatif ({len(summary_rows)})</h5><button onclick="window.print();" class="btn btn-outline-dark btn-sm">Imprimer</button></div>
+                <div class="card-body p-0"><div class="table-responsive"><table class="table table-striped table-hover mb-0 align-middle text-center">
+                    <thead><tr><th class="text-start ps-4">Employé</th><th>Présents</th><th>Absents</th><th>Retards</th><th class="pe-4">Total Heures</th></tr></thead>
+                    <tbody>{summary_table_rows}</tbody>
+                </table></div></div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
 
 
-# --- WEBHOOK HIKVISION MULTI-TENANT ---
+# --- WEBHOOK HIKVISION ---
 @app.post("/api/v1/attendance-webhook")
 async def receive_attendance(request: Request):
     try:
@@ -1198,12 +1254,9 @@ async def receive_attendance(request: Request):
         raw_text = body.decode("utf-8", errors="ignore")
         company_slug = request.query_params.get("company")
 
-        employee_no = "UNKNOWN"
-        device_id = None
-        
+        employee_no, device_id = "UNKNOWN", None
         m_dev = re.search(r'"(?:serialNo|serialNumber|deviceID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?', raw_text)
         if m_dev: device_id = m_dev.group(1).strip()
-        
         m_emp = re.search(r'"(?:employeeNoString|employeeNo|cardNo)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?', raw_text)
         if m_emp: employee_no = m_emp.group(1).strip()
 
@@ -1220,13 +1273,7 @@ async def receive_attendance(request: Request):
                 comp = cursor.fetchone()
                 if comp: company_id = comp['id']
 
-            cursor.execute(
-                """
-                INSERT INTO attendance_raw_logs (company_id, badge_or_card_id, punch_timestamp, device_id, punch_type)
-                VALUES (%s, %s, %s, %s, 'IN')
-                """,
-                (company_id, employee_no, local_punch_time, device_id or "Terminal_Inconnu")
-            )
+            cursor.execute("INSERT INTO attendance_raw_logs (company_id, badge_or_card_id, punch_timestamp, device_id, punch_type) VALUES (%s, %s, %s, %s, 'IN')", (company_id, employee_no, local_punch_time, device_id or "Terminal_Inconnu"))
             conn.commit()
         conn.close()
 
