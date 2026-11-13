@@ -437,7 +437,7 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                 </tr>
             """
     else:
-        dev_rows_html = '<tr><td colspan="3" class="text-center py-3 text-muted">Aucun terminal détecté pour l'instant. Effectuez un pointage.</td></tr>'
+        dev_rows_html = "<tr><td colspan=\"3\" class=\"text-center py-3 text-muted\">Aucun terminal détecté pour l'instant. Effectuez un pointage.</td></tr>"
 
     html_content = f"""
     <!DOCTYPE html>
