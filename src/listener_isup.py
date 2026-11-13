@@ -28,30 +28,65 @@ async def get_logo():
 DRH_USERNAME = "drh"
 DRH_PASSWORD = "password123"
 
-# Fonction utilitaire pour initialiser les tables et horaires par défaut
+# Fonction utilitaire pour initialiser les tables multi-entreprises et horaires par défaut
 def init_database_tables():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Table de renommage des appareils
+            # 1. Création de la table des entreprises
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS companies (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(150) NOT NULL,
+                    slug VARCHAR(100) UNIQUE NOT NULL,
+                    is_active BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            # Insérer une entreprise par défaut (pour les données existantes)
+            cursor.execute("""
+                INSERT INTO companies (id, name, slug) 
+                VALUES (1, 'Entreprise Principale (Démo)', 'demo') 
+                ON CONFLICT (id) DO NOTHING
+            """)
+
+            # 2. Table de renommage des appareils + company_id
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS devices_mapping (
                     device_key VARCHAR(100) PRIMARY KEY,
-                    friendly_name VARCHAR(100) NOT NULL
+                    friendly_name VARCHAR(100) NOT NULL,
+                    company_id INT REFERENCES companies(id) ON DELETE CASCADE
                 )
             """)
-            # Table des horaires de travail
+            cursor.execute("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='devices_mapping' and column_name='company_id'
+            """)
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE devices_mapping ADD COLUMN company_id INT REFERENCES companies(id) ON DELETE CASCADE")
+            cursor.execute("UPDATE devices_mapping SET company_id = 1 WHERE company_id IS NULL")
+
+            # 3. Table des horaires de travail + company_id
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS work_schedules (
                     id SERIAL PRIMARY KEY,
+                    company_id INT REFERENCES companies(id) ON DELETE CASCADE,
                     name VARCHAR(100) NOT NULL,
                     start_time TIME NOT NULL,
                     end_time TIME NOT NULL,
                     late_tolerance_minutes INT DEFAULT 30
                 )
             """)
+            cursor.execute("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='work_schedules' and column_name='company_id'
+            """)
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE work_schedules ADD COLUMN company_id INT REFERENCES companies(id) ON DELETE CASCADE")
+            cursor.execute("UPDATE work_schedules SET company_id = 1 WHERE company_id IS NULL")
             
-            # Table de liaison pour les horaires multiples par travailleur
+            # 4. Table de liaison pour les horaires multiples par travailleur
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS employee_schedules (
                     badge_or_card_id VARCHAR(100) NOT NULL,
@@ -60,21 +95,40 @@ def init_database_tables():
                 )
             """)
 
-            # Insérer des horaires par défaut s'il n'en existe aucun
-            cursor.execute("SELECT COUNT(*) as cnt FROM work_schedules")
+            # 5. Ajout de company_id dans employees si absent
+            cursor.execute("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='employees' and column_name='company_id'
+            """)
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE employees ADD COLUMN company_id INT REFERENCES companies(id) ON DELETE CASCADE")
+            cursor.execute("UPDATE employees SET company_id = 1 WHERE company_id IS NULL")
+
+            # 6. Ajout de company_id dans attendance_raw_logs si absent
+            cursor.execute("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name='attendance_raw_logs' and column_name='company_id'
+            """)
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE attendance_raw_logs ADD COLUMN company_id INT REFERENCES companies(id) ON DELETE CASCADE")
+            cursor.execute("UPDATE attendance_raw_logs SET company_id = 1 WHERE company_id IS NULL")
+
+            # Insérer des horaires par défaut pour l'entreprise 1 s'il n'en existe aucun
+            cursor.execute("SELECT COUNT(*) as cnt FROM work_schedules WHERE company_id = 1")
             res = cursor.fetchone()
             if res and res['cnt'] == 0:
                 cursor.execute("""
-                    INSERT INTO work_schedules (name, start_time, end_time, late_tolerance_minutes)
+                    INSERT INTO work_schedules (company_id, name, start_time, end_time, late_tolerance_minutes)
                     VALUES 
-                    ('Standard (08:00 - 17:00)', '08:00:00', '17:00:00', 30),
-                    ('Vacation Matin (06:00 - 14:00)', '06:00:00', '14:00:00', 15),
-                    ('Vacation Soir (14:00 - 22:00)', '14:00:00', '22:00:00', 15),
-                    ('Shift Nuit (22:00 - 06:00)', '22:00:00', '06:00:00', 20)
+                    (1, 'Standard (08:00 - 17:00)', '08:00:00', '17:00:00', 30),
+                    (1, 'Vacation Matin (06:00 - 14:00)', '06:00:00', '14:00:00', 15),
+                    (1, 'Vacation Soir (14:00 - 22:00)', '14:00:00', '22:00:00', 15),
+                    (1, 'Shift Nuit (22:00 - 06:00)', '22:00:00', '06:00:00', 20)
                 """)
 
             conn.commit()
         conn.close()
+        print("Structure multi-entreprises et horaires multiples initialisée avec succès !")
     except Exception as e:
         print(f"Erreur initialisation tables BDD : {e}")
 
@@ -205,6 +259,7 @@ async def login_action(username: str = Form(...), password: str = Form(...)):
     if username == DRH_USERNAME and password == DRH_PASSWORD:
         response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="drh_session", value="authenticated", httponly=True)
+        response.set_cookie(key="company_id", value="1", httponly=True)
         return response
     else:
         return RedirectResponse(url="/login?error=Identifiants+incorrects", status_code=303)
@@ -213,10 +268,11 @@ async def login_action(username: str = Form(...), password: str = Form(...)):
 async def logout():
     response = RedirectResponse(url="/login", status_code=303)
     response.delete_cookie(key="drh_session")
+    response.delete_cookie(key="company_id")
     return response
 
 @app.get("/", response_class=HTMLResponse)
-async def dashboard(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None)):
+async def dashboard(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -232,14 +288,15 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                 cursor.execute("""
                     SELECT e.*
                     FROM employees e 
+                    WHERE e.company_id = %s
                     ORDER BY COALESCE(NULLIF(TRIM(e.department), ''), 'Non assigné') ASC, e.first_name ASC, e.last_name ASC
-                """)
+                """, (company_id,))
                 employees = cursor.fetchall()
             except Exception:
                 employees = []
                 
             try:
-                cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+                cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
                 schedules = cursor.fetchall()
             except Exception:
                 schedules = []
@@ -250,7 +307,8 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
                     SELECT es.badge_or_card_id, s.name, s.start_time, s.end_time
                     FROM employee_schedules es
                     JOIN work_schedules s ON es.schedule_id = s.id
-                """)
+                    WHERE s.company_id = %s
+                """, (company_id,))
                 for row in cursor.fetchall():
                     b_id = row['badge_or_card_id']
                     if b_id not in emp_schedules_map:
@@ -259,10 +317,10 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
             except Exception as e:
                 print(f"Erreur chargement horaires employés : {e}")
 
-            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL")
+            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL AND company_id = %s", (company_id,))
             raw_devs = [row['device_id'] for row in cursor.fetchall()]
             
-            cursor.execute("SELECT * FROM devices_mapping")
+            cursor.execute("SELECT * FROM devices_mapping WHERE company_id = %s", (company_id,))
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
             
             all_keys = set(raw_devs).union(set(mappings.keys()))
@@ -828,7 +886,7 @@ async def dashboard(request: Request, error: str = None, success: str = None, dr
 
 # --- ROUTE IMPORTATION D'EMPLOYÉS (EXCEL / CSV) ---
 @app.post("/employees/import")
-async def import_employees(file: UploadFile = File(...), drh_session: str = Cookie(None)):
+async def import_employees(file: UploadFile = File(...), drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -870,14 +928,15 @@ async def import_employees(file: UploadFile = File(...), drh_session: str = Cook
 
                 cursor.execute(
                     """
-                    INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
-                    VALUES (%s, %s, %s, %s, TRUE)
+                    INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active)
+                    VALUES (%s, %s, %s, %s, %s, TRUE)
                     ON CONFLICT (badge_or_card_id) DO UPDATE 
                     SET first_name = EXCLUDED.first_name, 
                         last_name = EXCLUDED.last_name, 
-                        department = EXCLUDED.department
+                        department = EXCLUDED.department,
+                        company_id = EXCLUDED.company_id
                     """,
-                    (badge_val, prenom_val, nom_val, dept_val)
+                    (badge_val, prenom_val, nom_val, dept_val, company_id)
                 )
                 imported_count += 1
             conn.commit()
@@ -897,7 +956,8 @@ async def add_schedule(
     start_time: str = Form(...),
     end_time: str = Form(...),
     late_tolerance_minutes: int = Form(30),
-    drh_session: str = Cookie(None)
+    drh_session: str = Cookie(None),
+    company_id: str = Cookie("1")
 ):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
@@ -905,9 +965,9 @@ async def add_schedule(
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO work_schedules (name, start_time, end_time, late_tolerance_minutes)
-                VALUES (%s, %s, %s, %s)
-            """, (name.strip(), start_time, end_time, late_tolerance_minutes))
+                INSERT INTO work_schedules (company_id, name, start_time, end_time, late_tolerance_minutes)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (company_id, name.strip(), start_time, end_time, late_tolerance_minutes))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -915,14 +975,14 @@ async def add_schedule(
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/schedules/delete/{sched_id}")
-async def delete_schedule(sched_id: int, drh_session: str = Cookie(None)):
+async def delete_schedule(sched_id: int, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("DELETE FROM employee_schedules WHERE schedule_id = %s", (sched_id,))
-            cursor.execute("DELETE FROM work_schedules WHERE id = %s", (sched_id,))
+            cursor.execute("DELETE FROM work_schedules WHERE id = %s AND company_id = %s", (sched_id, company_id))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -931,17 +991,17 @@ async def delete_schedule(sched_id: int, drh_session: str = Cookie(None)):
 
 
 @app.post("/devices/add")
-async def add_device_manual(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
+async def add_device_manual(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO devices_mapping (device_key, friendly_name)
-                VALUES (%s, %s)
-                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
-            """, (device_key.strip(), friendly_name.strip()))
+                INSERT INTO devices_mapping (device_key, friendly_name, company_id)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name, company_id = EXCLUDED.company_id
+            """, (device_key.strip(), friendly_name.strip(), company_id))
             conn.commit()
         conn.close()
         return RedirectResponse(url="/?success=Terminal+ajouté+avec+succès", status_code=303)
@@ -950,17 +1010,17 @@ async def add_device_manual(device_key: str = Form(...), friendly_name: str = Fo
         return RedirectResponse(url=f"/?error=Erreur+lors+de+l'ajout+du+terminal:+{str(e)}", status_code=303)
 
 @app.post("/devices/rename")
-async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None)):
+async def rename_device(device_key: str = Form(...), friendly_name: str = Form(...), drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO devices_mapping (device_key, friendly_name)
-                VALUES (%s, %s)
-                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name
-            """, (device_key.strip(), friendly_name.strip()))
+                INSERT INTO devices_mapping (device_key, friendly_name, company_id)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (device_key) DO UPDATE SET friendly_name = EXCLUDED.friendly_name, company_id = EXCLUDED.company_id
+            """, (device_key.strip(), friendly_name.strip(), company_id))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -969,15 +1029,15 @@ async def rename_device(device_key: str = Form(...), friendly_name: str = Form(.
 
 
 @app.get("/devices/delete/{device_key}")
-async def delete_device(device_key: str, drh_session: str = Cookie(None)):
+async def delete_device(device_key: str, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM devices_mapping WHERE device_key = %s", (device_key,))
-            cursor.execute("DELETE FROM attendance_raw_logs WHERE device_id = %s", (device_key,))
+            cursor.execute("DELETE FROM devices_mapping WHERE device_key = %s AND company_id = %s", (device_key, company_id))
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE device_id = %s AND company_id = %s", (device_key, company_id))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -987,14 +1047,14 @@ async def delete_device(device_key: str, drh_session: str = Cookie(None)):
 
 
 @app.get("/reports/delete/{log_id}")
-async def delete_attendance_log(log_id: int, drh_session: str = Cookie(None)):
+async def delete_attendance_log(log_id: int, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM attendance_raw_logs WHERE id = %s", (log_id,))
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE id = %s AND company_id = %s", (log_id, company_id))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -1004,7 +1064,7 @@ async def delete_attendance_log(log_id: int, drh_session: str = Cookie(None)):
 
 
 @app.get("/reports", response_class=HTMLResponse)
-async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
+async def attendance_reports(request: Request, start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1020,14 +1080,14 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM devices_mapping")
+            cursor.execute("SELECT * FROM devices_mapping WHERE company_id = %s", (company_id,))
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
 
-            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL ORDER BY device_id")
+            cursor.execute("SELECT DISTINCT device_id FROM attendance_raw_logs WHERE device_id IS NOT NULL AND company_id = %s ORDER BY device_id", (company_id,))
             devices = [{"key": row['device_id'], "name": mappings.get(row['device_id'], row['device_id'])} for row in cursor.fetchall()]
 
-            # Récupérer tous les horaires disponibles
-            cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+            # Récupérer tous les horaires disponibles pour l'entreprise
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
             # Récupérer la cartographie des horaires assignés par employé
@@ -1035,7 +1095,8 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                 SELECT es.badge_or_card_id, s.*
                 FROM employee_schedules es
                 JOIN work_schedules s ON es.schedule_id = s.id
-            """)
+                WHERE s.company_id = %s
+            """, (company_id,))
             emp_schedules_map = {}
             for row in cursor.fetchall():
                 b_id = row['badge_or_card_id']
@@ -1054,11 +1115,11 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
                     l.punch_timestamp as exact_punch,
                     l.device_id
                 FROM attendance_raw_logs l
-                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
-                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id
+                WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s
             """
             
-            params = [start_date, end_date]
+            params = [company_id, start_date, end_date]
             
             if device_id and device_id != "ALL":
                 base_query += " AND l.device_id = %s"
@@ -1362,7 +1423,7 @@ async def attendance_reports(request: Request, start_date: str = None, end_date:
 
 # --- ROUTE D'EXPORTATION EXCEL DU RAPPORT JOURNALIER ---
 @app.get("/reports/export/excel")
-async def export_reports_excel(start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None)):
+async def export_reports_excel(start_date: str = None, end_date: str = None, device_id: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1373,17 +1434,18 @@ async def export_reports_excel(start_date: str = None, end_date: str = None, dev
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM devices_mapping")
+            cursor.execute("SELECT * FROM devices_mapping WHERE company_id = %s", (company_id,))
             mappings = {row['device_key']: row['friendly_name'] for row in cursor.fetchall()}
 
-            cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
             cursor.execute("""
                 SELECT es.badge_or_card_id, s.*
                 FROM employee_schedules es
                 JOIN work_schedules s ON es.schedule_id = s.id
-            """)
+                WHERE s.company_id = %s
+            """, (company_id,))
             emp_schedules_map = {}
             for row in cursor.fetchall():
                 b_id = row['badge_or_card_id']
@@ -1401,10 +1463,10 @@ async def export_reports_excel(start_date: str = None, end_date: str = None, dev
                     l.punch_timestamp as exact_punch,
                     l.device_id
                 FROM attendance_raw_logs l
-                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
-                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id
+                WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s
             """
-            params = [start_date, end_date]
+            params = [company_id, start_date, end_date]
             if device_id and device_id != "ALL":
                 base_query += " AND l.device_id = %s"
                 params.append(device_id)
@@ -1479,7 +1541,7 @@ async def export_reports_excel(start_date: str = None, end_date: str = None, dev
 
 
 @app.get("/summary", response_class=HTMLResponse)
-async def attendance_summary(request: Request, start_date: str = None, end_date: str = None, drh_session: str = Cookie(None)):
+async def attendance_summary(request: Request, start_date: str = None, end_date: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1494,14 +1556,15 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
             cursor.execute("""
                 SELECT es.badge_or_card_id, s.*
                 FROM employee_schedules es
                 JOIN work_schedules s ON es.schedule_id = s.id
-            """)
+                WHERE s.company_id = %s
+            """, (company_id,))
             emp_schedules_map = {}
             for row in cursor.fetchall():
                 b_id = row['badge_or_card_id']
@@ -1518,11 +1581,11 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
                     MIN(l.punch_timestamp) as check_in,
                     MAX(l.punch_timestamp) as check_out
                 FROM attendance_raw_logs l
-                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
-                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id
+                WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s
                 GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name
             """
-            cursor.execute(query, (start_date, end_date))
+            cursor.execute(query, (company_id, start_date, end_date))
             raw_logs = cursor.fetchall()
             
             emp_stats = {}
@@ -1747,7 +1810,7 @@ async def attendance_summary(request: Request, start_date: str = None, end_date:
 
 # --- ROUTE D'EXPORTATION EXCEL DE LA SYNTHÈSE ---
 @app.get("/summary/export/excel")
-async def export_summary_excel(start_date: str = None, end_date: str = None, drh_session: str = Cookie(None)):
+async def export_summary_excel(start_date: str = None, end_date: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1758,14 +1821,15 @@ async def export_summary_excel(start_date: str = None, end_date: str = None, drh
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             all_schedules = cursor.fetchall()
 
             cursor.execute("""
                 SELECT es.badge_or_card_id, s.*
                 FROM employee_schedules es
                 JOIN work_schedules s ON es.schedule_id = s.id
-            """)
+                WHERE s.company_id = %s
+            """, (company_id,))
             emp_schedules_map = {}
             for row in cursor.fetchall():
                 b_id = row['badge_or_card_id']
@@ -1782,11 +1846,11 @@ async def export_summary_excel(start_date: str = None, end_date: str = None, drh
                     MIN(l.punch_timestamp) as check_in,
                     MAX(l.punch_timestamp) as check_out
                 FROM attendance_raw_logs l
-                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id
-                WHERE DATE(l.punch_timestamp) BETWEEN %s AND %s
+                LEFT JOIN employees e ON l.badge_or_card_id = e.badge_or_card_id AND e.company_id = l.company_id
+                WHERE l.company_id = %s AND DATE(l.punch_timestamp) BETWEEN %s AND %s
                 GROUP BY l.badge_or_card_id, DATE(l.punch_timestamp), e.first_name, e.last_name
             """
-            cursor.execute(query, (start_date, end_date))
+            cursor.execute(query, (company_id, start_date, end_date))
             raw_logs = cursor.fetchall()
         conn.close()
 
@@ -1864,7 +1928,8 @@ async def add_employee(
     first_name: str = Form(...),
     last_name: str = Form(...),
     department: str = Form(None),
-    drh_session: str = Cookie(None)
+    drh_session: str = Cookie(None),
+    company_id: str = Cookie("1")
 ):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
@@ -1877,14 +1942,15 @@ async def add_employee(
         with conn.cursor() as cursor:
             cursor.execute(
                 """
-                INSERT INTO employees (badge_or_card_id, first_name, last_name, department, is_active)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO employees (badge_or_card_id, first_name, last_name, department, company_id, is_active)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 (
                     badge_or_card_id.strip(), 
                     first_name.strip(), 
                     last_name.strip(), 
                     department.strip() if department else None,
+                    company_id,
                     True
                 )
             )
@@ -1908,7 +1974,7 @@ async def add_employee(
 
 
 @app.get("/employees/delete/{badge_id}")
-async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
+async def delete_employee(badge_id: str, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1916,7 +1982,7 @@ async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute("DELETE FROM employee_schedules WHERE badge_or_card_id = %s", (badge_id,))
-            cursor.execute("DELETE FROM employees WHERE badge_or_card_id = %s", (badge_id,))
+            cursor.execute("DELETE FROM employees WHERE badge_or_card_id = %s AND company_id = %s", (badge_id, company_id))
             conn.commit()
         conn.close()
     except Exception as e:
@@ -1926,7 +1992,7 @@ async def delete_employee(badge_id: str, drh_session: str = Cookie(None)):
 
 
 @app.get("/employees/edit/{badge_id}", response_class=HTMLResponse)
-async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None)):
+async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1936,10 +2002,10 @@ async def edit_employee_page(badge_id: str, drh_session: str = Cookie(None)):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM employees WHERE badge_or_card_id = %s", (badge_id,))
+            cursor.execute("SELECT * FROM employees WHERE badge_or_card_id = %s AND company_id = %s", (badge_id, company_id))
             employee = cursor.fetchone()
             
-            cursor.execute("SELECT * FROM work_schedules ORDER BY id ASC")
+            cursor.execute("SELECT * FROM work_schedules WHERE company_id = %s ORDER BY id ASC", (company_id,))
             schedules = cursor.fetchall()
 
             cursor.execute("SELECT schedule_id FROM employee_schedules WHERE badge_or_card_id = %s", (badge_id,))
@@ -2051,7 +2117,8 @@ async def update_employee(
     last_name: str = Form(...),
     department: str = Form(None),
     is_active: str = Form(None),
-    drh_session: str = Cookie(None)
+    drh_session: str = Cookie(None),
+    company_id: str = Cookie("1")
 ):
     if drh_session != "authenticated":
         return RedirectResponse(url="/login", status_code=303)
@@ -2069,7 +2136,7 @@ async def update_employee(
                 """
                 UPDATE employees 
                 SET badge_or_card_id = %s, first_name = %s, last_name = %s, department = %s, is_active = %s
-                WHERE badge_or_card_id = %s
+                WHERE badge_or_card_id = %s AND company_id = %s
                 """,
                 (
                     new_badge,
@@ -2077,7 +2144,8 @@ async def update_employee(
                     last_name.strip(),
                     department.strip() if department else None,
                     is_active_bool,
-                    old_badge_id
+                    old_badge_id,
+                    company_id
                 )
             )
 
@@ -2114,10 +2182,12 @@ async def receive_attendance(request: Request):
         device_id = None
         punch_type = "IN"
 
-        # 1. Priorité au paramètre d'URL ?dev=...
+        # 1. Priorité au paramètre d'URL ?dev=... et ?company=...
         query_dev = request.query_params.get("dev")
         if query_dev:
             device_id = f"Terminal_{query_dev.strip()}"
+
+        company_slug = request.query_params.get("company")
 
         try:
             data = json.loads(raw_text)
@@ -2154,7 +2224,7 @@ async def receive_attendance(request: Request):
         # Fallback Regex pour XML ou JSON non standard
         if not device_id:
             for dev_pattern in [
-                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
+                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
                 r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
             ]:
                 m_dev = re.search(dev_pattern, raw_text)
@@ -2164,7 +2234,7 @@ async def receive_attendance(request: Request):
 
         if employee_no == "UNKNOWN":
             for pattern in [
-                r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
+                r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
                 r'<employeeNoString>([^<]+)</employeeNoString>',
                 r'<employeeNo>([^<]+)</employeeNo>',
                 r'<cardNo>([^<]+)</cardNo>'
@@ -2185,26 +2255,42 @@ async def receive_attendance(request: Request):
                 client_host = request.client.host if request.client else "UNKNOWN_IP"
             device_id = f"IP_{client_host}"
 
-        print(f"-> Pointage validé | Matricule : {employee_no} | Appareil : {device_id}")
-
         local_punch_time = datetime.now(ZoneInfo("Africa/Kinshasa")).replace(tzinfo=None)
 
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            company_id = None
+            if company_slug:
+                cursor.execute("SELECT id FROM companies WHERE slug = %s", (company_slug.strip(),))
+                comp_res = cursor.fetchone()
+                if comp_res:
+                    company_id = comp_res['id']
+
+            if not company_id and device_id:
+                cursor.execute("SELECT company_id FROM devices_mapping WHERE device_key = %s", (device_id,))
+                dev_res = cursor.fetchone()
+                if dev_res and dev_res.get('company_id'):
+                    company_id = dev_res['company_id']
+
+            if not company_id:
+                company_id = 1
+
+            print(f"-> Pointage validé | Entreprise ID : {company_id} | Matricule : {employee_no} | Appareil : {device_id}")
+
             cursor.execute(
                 """
-                INSERT INTO devices_mapping (device_key, friendly_name)
-                VALUES (%s, %s)
+                INSERT INTO devices_mapping (device_key, friendly_name, company_id)
+                VALUES (%s, %s, %s)
                 ON CONFLICT (device_key) DO NOTHING
                 """,
-                (device_id, device_id)
+                (device_id, device_id, company_id)
             )
             cursor.execute(
                 """
-                INSERT INTO attendance_raw_logs (badge_or_card_id, punch_timestamp, device_id, punch_type)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO attendance_raw_logs (badge_or_card_id, punch_timestamp, device_id, punch_type, company_id)
+                VALUES (%s, %s, %s, %s, %s)
                 """,
-                (employee_no, local_punch_time, device_id, punch_type)
+                (employee_no, local_punch_time, device_id, punch_type, company_id)
             )
             conn.commit()
         conn.close()
