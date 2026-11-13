@@ -2234,7 +2234,7 @@ async def receive_attendance(request: Request):
 
         if employee_no == "UNKNOWN":
             for pattern in [
-                r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
+               r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?'
                 r'<employeeNoString>([^<]+)</employeeNoString>',
                 r'<employeeNo>([^<]+)</employeeNo>',
                 r'<cardNo>([^<]+)</cardNo>'
