@@ -397,39 +397,13 @@ async def add_company(name: str = Form(...), slug: str = Form(...), drh_session:
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # Insertion sans forcer l'ID pour laisser la séquence SERIAL faire son travail
             cursor.execute("INSERT INTO companies (name, slug) VALUES (%s, %s)", (name.strip(), slug.strip().lower()))
             conn.commit()
         conn.close()
         return RedirectResponse(url="/companies?success=Entreprise+ajoutée+avec+succès", status_code=303)
     except Exception as e:
         return RedirectResponse(url=f"/companies?error=Erreur+lors+de+l'ajout:+{str(e)}", status_code=303)
-
-@app.get("/companies/switch/{comp_id}")
-async def switch_company(comp_id: int, drh_session: str = Cookie(None)):
-    if drh_session != "authenticated":
-        return RedirectResponse(url="/login", status_code=303)
-    response = RedirectResponse(url="/", status_code=303)
-    response.set_cookie(key="company_id", value=str(comp_id), httponly=True)
-    return response
-
-@app.get("/companies/delete/{comp_id}")
-async def delete_company(comp_id: int, drh_session: str = Cookie(None)):
-    if drh_session != "authenticated":
-        return RedirectResponse(url="/login", status_code=303)
-    if comp_id == 1:
-        return RedirectResponse(url="/companies?error=Impossible+de+supprimer+l'entreprise+principale", status_code=303)
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM companies WHERE id = %s", (comp_id,))
-            conn.commit()
-        conn.close()
-        response = RedirectResponse(url="/companies?success=Entreprise+supprimée", status_code=303)
-        response.set_cookie(key="company_id", value="1", httponly=True)
-        return response
-    except Exception as e:
-        return RedirectResponse(url=f"/companies?error=Erreur:+{str(e)}", status_code=303)
-
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, error: str = None, success: str = None, drh_session: str = Cookie(None), company_id: str = Cookie("1")):
