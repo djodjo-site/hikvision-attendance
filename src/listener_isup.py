@@ -2146,7 +2146,11 @@ async def delete_employee(badge_id: str, drh_session: str = Cookie(None), compan
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # 1. Supprimer les liaisons d'horaires
             cursor.execute("DELETE FROM employee_schedules WHERE badge_or_card_id = %s", (badge_id,))
+            # 2. Supprimer les logs de pointage associés pour éviter l'erreur de clé étrangère
+            cursor.execute("DELETE FROM attendance_raw_logs WHERE badge_or_card_id = %s AND company_id = %s", (badge_id, company_id))
+            # 3. Supprimer l'employé
             cursor.execute("DELETE FROM employees WHERE badge_or_card_id = %s AND company_id = %s", (badge_id, company_id))
             conn.commit()
         conn.close()
