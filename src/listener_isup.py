@@ -2402,31 +2402,32 @@ async def receive_attendance(request: Request):
             pass
 
         # Fallback Regex pour XML ou JSON non standard
-        if not device_id:
-            for dev_pattern in [
-                r"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)\s*[:=]\s*[\"']?([^\"'<>,\s]+)[\"']?"
-                r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
-            ]:
-                m_dev = re.search(dev_pattern, raw_text)
-                if m_dev:
-                    device_id = m_dev.group(1).strip()
-                    break
+       # Fallback Regex pour XML ou JSON non standard
+if not device_id:
+    for dev_pattern in [
+        r'(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
+        r'<(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)>'
+    ]:
+        m_dev = re.search(dev_pattern, raw_text)
+        if m_dev:
+            device_id = m_dev.group(1).strip()
+            break
 
-        if employee_no == "UNKNOWN":
-            for pattern in [
-               r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*[\"']?([^\"'<>,\s]+)[\"']?",
-                r'<employeeNoString>([^<]+)</employeeNoString>',
-                r'<employeeNo>([^<]+)</employeeNo>',
-                r'<cardNo>([^<]+)</cardNo>'
-            ]:
-                match = re.search(pattern, raw_text)
-                if match:
-                    employee_no = match.group(1).strip()
-                    break
+if employee_no == "UNKNOWN":
+    for pattern in [
+        r'(?:employeeNoString|employeeNo|cardNo|employeeID)\s*[:=]\s*["\']?([^"\'<>,\s]+)["\']?',
+        r'<employeeNoString>([^<]+)</employeeNoString>',
+        r'<employeeNo>([^<]+)</employeeNo>',
+        r'<cardNo>([^<]+)</cardNo>'
+    ]:
+        match = re.search(pattern, raw_text)
+        if match:
+            employee_no = match.group(1).strip()
+            break
 
-        if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
-            return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
-
+# Correction du 'L' majuscule en 'l' minuscule pour len()
+if employee_no == "UNKNOWN" or not employee_no or len(employee_no) > 20:
+    return Response(content="<Response><statusString>IGNORED</statusString></Response>", media_type="application/xml", status_code=200)
         if not device_id:
             forwarded = request.headers.get("x-forwarded-for")
             if forwarded:
