@@ -2404,7 +2404,7 @@ async def receive_attendance(request: Request):
         # Fallback Regex pour XML ou JSON non standard
         if not device_id:
             for dev_pattern in [
-                r'"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
+                r"(?:serialNo|serialNumber|deviceID|deviceSerialNo|macAddress)\s*[:=]\s*[\"']?([^\"'<>,\s]+)[\"']?"
                 r'<(?:serialNo|serialNumber|deviceID|macAddress)>([^<]+)</(?:serialNo|serialNumber|deviceID|macAddress)>'
             ]:
                 m_dev = re.search(dev_pattern, raw_text)
@@ -2414,7 +2414,7 @@ async def receive_attendance(request: Request):
 
         if employee_no == "UNKNOWN":
             for pattern in [
-               r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*["']?([^"'<>,\s]+)["']?',
+               r'"(?:employeeNoString|employeeNo|cardNo|employeeID)"\s*[:=]\s*[\"']?([^\"'<>,\s]+)[\"']?",
                 r'<employeeNoString>([^<]+)</employeeNoString>',
                 r'<employeeNo>([^<]+)</employeeNo>',
                 r'<cardNo>([^<]+)</cardNo>'
